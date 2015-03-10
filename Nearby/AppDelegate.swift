@@ -8,6 +8,10 @@
 
 import UIKit
 
+import Parse
+
+import ParseCrashReporting
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -15,7 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        ParseCrashReporting.enable()
+
+        Parse.setApplicationId("qezEspdd6WnEHMneZCr9gt9sUFzUQzAjhx03xfuQ", clientKey: "wZj94Bzosernq83Z5267e6k9lVcozPYWwCdNe3xI")
+
         return true
     }
 
