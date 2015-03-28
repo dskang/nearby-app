@@ -17,38 +17,31 @@ class ViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpV
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            if CLLocationManager.authorizationStatus() == .NotDetermined {
-                locationManager.requestAlwaysAuthorization()
-            }
-        } else {
-            println("Location services are not enabled")
-        }
     }
 
     override func viewDidAppear(animated: Bool) {
+        println("appeared")
         super.viewDidAppear(animated)
 
         if PFUser.currentUser() == nil {
             // Create the log in view controller
             let logInController = PFLogInViewController()
             logInController.delegate = self
-            logInController.fields = (PFLogInFields.UsernameAndPassword
-                | PFLogInFields.LogInButton
-                | PFLogInFields.SignUpButton
-                | PFLogInFields.PasswordForgotten)
-
-            // Create the sign up view controller
-            let signUpController = PFSignUpViewController()
-            signUpController.delegate = self
-
-            // Assign our sign up controller to be displayed from our login controller
-            logInController.signUpController = signUpController
+            logInController.facebookPermissions = ["user_friends"]
+            logInController.fields = (PFLogInFields.Facebook)
+            // TODO: Handle user denying "user_friends" permission
+            // TODO: Handle user cancelling log in
 
             // Present the log in view controller
             self.presentViewController(logInController, animated: true, completion: nil)
+        } else {
+            if CLLocationManager.locationServicesEnabled() {
+                locationManager.delegate = self
+                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                if CLLocationManager.authorizationStatus() == .NotDetermined {
+                    locationManager.requestAlwaysAuthorization()
+                }
+            }
         }
     }
 
@@ -63,12 +56,6 @@ class ViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpV
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 
-    // MARK: - PFSignUpViewControllerDelegate
-
-    func signUpViewController(signUpController: PFSignUpViewController!, didSignUpUser user: PFUser!) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-
     // MARK: - CLLocationManagerDelegate
 
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
@@ -78,7 +65,6 @@ class ViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpV
         switch status {
         case .AuthorizedAlways:
             locationManager.startUpdatingLocation()
-            println("authorized")
         case .Restricted, .Denied:
             let alertController = UIAlertController(
                 title: "Background Location Access Disabled",
@@ -96,9 +82,7 @@ class ViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpV
             alertController.addAction(openAction)
 
             self.presentViewController(alertController, animated: true, completion: nil)
-            println("denied")
         default:
-            println("else")
             break
         }
     }

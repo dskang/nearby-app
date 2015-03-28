@@ -10,5 +10,6 @@
 #define Nearby_Nearby_Bridging_Header_h
 
 #import <ParseUI/ParseUI.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 #endif
