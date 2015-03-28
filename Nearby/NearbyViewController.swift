@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import CoreLocation
 
-class ViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, CLLocationManagerDelegate {
+class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
 
