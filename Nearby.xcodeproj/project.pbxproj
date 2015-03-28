@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5A400631AC1CEF000E6913D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A400621AC1CEF000E6913D /* CoreLocation.framework */; };
 		B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */; };
 		B5F2A4AD1AAF1ED100FD405C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AC1AAF1ED100FD405C /* ViewController.swift */; };
 		B5F2A4B01AAF1ED100FD405C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5F2A4AE1AAF1ED100FD405C /* Main.storyboard */; };
@@ -30,6 +31,7 @@
 		4078C9FAC7418807C248FD53 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		514AA05B58346A9EE5B1BB8C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		584FC7E0B4D1C214DCB0BB78 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		B5A400621AC1CEF000E6913D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B5F2A4A51AAF1ED100FD405C /* Nearby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nearby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F2A4A91AAF1ED100FD405C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5A400631AC1CEF000E6913D /* CoreLocation.framework in Frameworks */,
 				E4CCA75C070A31A4811B9798 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,6 +136,7 @@
 		E087D3B18E7538367E060E2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B5A400621AC1CEF000E6913D /* CoreLocation.framework */,
 				4078C9FAC7418807C248FD53 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -189,6 +193,11 @@
 				TargetAttributes = {
 					B5F2A4A41AAF1ED100FD405C = {
 						CreatedOnToolsVersion = 6.1.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					B5F2A4B91AAF1ED100FD405C = {
 						CreatedOnToolsVersion = 6.1.1;
