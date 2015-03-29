@@ -9,8 +9,11 @@
 import UIKit
 import Parse
 import CoreLocation
+import MapKit
 
-class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate, CLLocationManagerDelegate {
+class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLLocationManagerDelegate {
+
+    @IBOutlet weak var mapView: MKMapView!
 
     let locationManager = CLLocationManager()
 
