@@ -9,6 +9,7 @@
 #ifndef Nearby_Nearby_Bridging_Header_h
 #define Nearby_Nearby_Bridging_Header_h
 
+#import <Bolts/Bolts.h>
 #import <ParseUI/ParseUI.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 

@@ -23,10 +23,26 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     }
 
     override func viewDidAppear(animated: Bool) {
-        println("appeared")
         super.viewDidAppear(animated)
 
-        if PFUser.currentUser() == nil {
+        if let user = PFUser.currentUser() {
+            if CLLocationManager.locationServicesEnabled() {
+                locationManager.delegate = self
+                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                if CLLocationManager.authorizationStatus() == .NotDetermined {
+                    locationManager.requestAlwaysAuthorization()
+                }
+            }
+
+            FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
+                if error == nil {
+                    let userData = result as [NSObject: AnyObject]
+                    let facebookID = userData["id"] as String
+                    user["fbID"] = facebookID
+                    user.saveInBackground()
+                }
+            })
+        } else {
             // Create the log in view controller
             let logInController = PFLogInViewController()
             logInController.delegate = self
@@ -37,14 +53,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
             // Present the log in view controller
             self.presentViewController(logInController, animated: true, completion: nil)
-        } else {
-            if CLLocationManager.locationServicesEnabled() {
-                locationManager.delegate = self
-                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-                if CLLocationManager.authorizationStatus() == .NotDetermined {
-                    locationManager.requestAlwaysAuthorization()
-                }
-            }
         }
     }
 
