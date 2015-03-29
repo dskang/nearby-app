@@ -37,10 +37,19 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
                 if error == nil {
                     let userData = result as [NSObject: AnyObject]
+                    let name = userData["name"] as String
                     let facebookID = userData["id"] as String
+                    user["name"] = name
                     user["fbID"] = facebookID
                     user.saveInBackground()
                 }
+            })
+
+            PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
+                (result, error) in
+                let result = result as [PFUser]
+                println("\(result)")
+                println(result[0].objectId)
             })
         } else {
             // Create the log in view controller
