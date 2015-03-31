@@ -7,9 +7,7 @@
 //
 
 import UIKit
-
 import Parse
-
 import ParseCrashReporting
 
 @UIApplicationMain

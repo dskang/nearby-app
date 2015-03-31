@@ -76,17 +76,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
                 }
             }
 
-            FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
-                if error == nil {
-                    let userData = result as [NSObject: AnyObject]
-                    let name = userData["name"] as String
-                    let facebookID = userData["id"] as String
-                    user["name"] = name
-                    user["fbID"] = facebookID
-                    user.saveInBackground()
-                }
-            })
-
             PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
                 (result, error) in
                 let friends = result as [PFUser]
@@ -146,6 +135,16 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
     func logInViewController(logInController: PFLogInViewController!, didLogInUser user: PFUser!) {
         self.dismissViewControllerAnimated(true, completion: nil)
+        FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
+            if error == nil {
+                let userData = result as [NSObject: AnyObject]
+                let name = userData["name"] as String
+                let facebookID = userData["id"] as String
+                user["name"] = name
+                user["fbID"] = facebookID
+                user.saveInBackground()
+            }
+        })
     }
 
     // MARK: - CLLocationManagerDelegate
