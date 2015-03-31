@@ -16,6 +16,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     @IBOutlet weak var mapView: MKMapView!
 
     let locationManager = CLLocationManager()
+    let nearbyDistance = 150.0
     var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0) {
         willSet {
             if userLocation.coordinate.latitude == 0 && userLocation.coordinate.longitude == 0 {
@@ -23,16 +24,23 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
                 let latitude = newValue.coordinate.latitude
                 let longitude = newValue.coordinate.longitude
                 let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                let span = MKCoordinateSpan(latitudeDelta: 0.0045, longitudeDelta: 0.0045)
+                let degree = (nearbyDistance + 50) / 111000.0
+                let span = MKCoordinateSpan(latitudeDelta: degree, longitudeDelta: degree)
                 let region = MKCoordinateRegion(center: center, span: span)
                 mapView.setRegion(region, animated: true)
             }
         }
         didSet {
+            let timestamp = userLocation.timestamp.timeIntervalSince1970
             let latitude = userLocation.coordinate.latitude
             let longitude = userLocation.coordinate.longitude
             let accuracy = userLocation.horizontalAccuracy
-            let location: [String: Double] = ["latitude": latitude, "longitude": longitude, "accuracy": accuracy]
+            let location: [String: Double] = [
+                "timestamp": timestamp,
+                "latitude": latitude,
+                "longitude": longitude,
+                "accuracy": accuracy
+            ]
             let user = PFUser.currentUser()
             user["location"] = location
             user.saveInBackground()
@@ -79,12 +87,19 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
                 }
             })
 
-//            PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
-//                (result, error) in
-//                let result = result as [PFUser]
-//                println("\(result)")
-//                println(result[0].objectId)
-//            })
+            PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
+                (result, error) in
+                let friends = result as [PFUser]
+                for friend in friends {
+                    let location = friend["location"] as [String: Double]
+                    let latitude = location["latitude"]!
+                    let longitude = location["longitude"]!
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate.latitude = latitude
+                    annotation.coordinate.longitude = longitude
+                    self.mapView.addAnnotation(annotation)
+                }
+            })
         } else {
             // Create the log in view controller
             let logInController = PFLogInViewController()
