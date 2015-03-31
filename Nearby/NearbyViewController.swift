@@ -139,9 +139,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
         let location = locations.last as CLLocation
-        let eventDate = location.timestamp
-        let howRecent = eventDate.timeIntervalSinceNow
-        if abs(howRecent) < 15.0 {
+        let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
+        let locationChanged = userLocation.distanceFromLocation(location) > 5
+        if recent && locationChanged {
             userLocation = location
         }
     }
