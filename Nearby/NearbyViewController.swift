@@ -94,7 +94,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
                     let location = friend["location"] as [String: Double]
                     let latitude = location["latitude"]!
                     let longitude = location["longitude"]!
+                    let locationDate = NSDate(timeIntervalSince1970: location["timestamp"]!)
+                    let timeAgo = locationDate.shortTimeAgoSinceNow()
                     let annotation = MKPointAnnotation()
+                    annotation.title = friend["name"] as String
+                    annotation.subtitle = "\(timeAgo) ago"
                     annotation.coordinate.latitude = latitude
                     annotation.coordinate.longitude = longitude
                     self.mapView.addAnnotation(annotation)

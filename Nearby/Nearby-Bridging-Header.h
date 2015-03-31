@@ -12,5 +12,6 @@
 #import <Bolts/Bolts.h>
 #import <ParseUI/ParseUI.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
+#import "NSDate+DateTools.h"
 
 #endif
