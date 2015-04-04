@@ -2,7 +2,9 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="lHN-Nv-fJ8">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Nearby-->
@@ -17,17 +19,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Os-Rn-fUf">
-                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
-                                <items>
-                                    <navigationItem title="Nearby" id="bdB-W4-MgU"/>
-                                </items>
-                            </navigationBar>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="DrE-Hb-dqG">
-                                <rect key="frame" x="0.0" y="64" width="600" height="270"/>
-                            </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="MX9-uh-OiU">
-                                <rect key="frame" x="0.0" y="335" width="600" height="270"/>
+                                <rect key="frame" x="0.0" y="343" width="600" height="257"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="X88-JF-IzW"/>
@@ -67,29 +60,75 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="0Lq-Vm-bHs"/>
                                 </connections>
                             </tableView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="DrE-Hb-dqG">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="343"/>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="trailing" secondItem="6Os-Rn-fUf" secondAttribute="trailing" id="2ZX-Dm-pzc"/>
-                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="height" secondItem="MX9-uh-OiU" secondAttribute="height" id="5Vq-Dl-djf"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="4A3-Sk-JOw"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="height" secondItem="MX9-uh-OiU" secondAttribute="height" multiplier="4:3" id="5Vq-Dl-djf"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="DrE-Hb-dqG" secondAttribute="leading" id="5mJ-tM-aeO"/>
-                            <constraint firstItem="6Os-Rn-fUf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" symbolic="YES" id="6mB-7r-Yvg"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-5" id="HNa-sQ-3ol"/>
-                            <constraint firstItem="6Os-Rn-fUf" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" symbolic="YES" id="SGi-C7-5NG"/>
-                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="6Os-Rn-fUf" secondAttribute="leading" id="WHD-FX-t1s"/>
-                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="6Os-Rn-fUf" secondAttribute="bottom" id="ZUK-1u-him"/>
-                            <constraint firstItem="6Os-Rn-fUf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" symbolic="YES" id="agO-ob-lc5"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="6Os-Rn-fUf" secondAttribute="bottom" constant="487" id="aqP-Me-YNg"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" constant="-16" id="8mm-ve-f4k"/>
+                            <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="B49-k5-Q3N"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-49" id="B9X-9N-IhU"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="F7m-Sx-5bl"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="HJf-gO-gH7"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="HNa-sQ-3ol"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="I5e-26-TpS"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="Jks-xq-lpP"/>
+                            <constraint firstAttribute="bottom" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="NQc-cY-TqY"/>
+                            <constraint firstItem="MX9-uh-OiU" firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="NeV-mS-FpU"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="width" secondItem="MX9-uh-OiU" secondAttribute="height" multiplier="2:1" id="Pg3-9b-rif"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="SEH-0b-xa6"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="TjW-yA-uWk"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="Tzu-u4-XNY"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="UTW-uK-PKz"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="Yb2-so-uPZ"/>
+                            <constraint firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="ZTp-z2-ccB"/>
+                            <constraint firstAttribute="trailing" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="cDJ-jc-Izb"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="hk2-TP-xSe"/>
+                            <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="iHi-WC-1dj"/>
+                            <constraint firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="j7J-ns-wWe"/>
                             <constraint firstAttribute="bottom" secondItem="DrE-Hb-dqG" secondAttribute="bottom" id="jNH-HH-CEr"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="MX9-uh-OiU" secondAttribute="trailing" id="nOi-TF-v07"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="trailing" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="r4E-n2-XgI"/>
-                            <constraint firstAttribute="trailing" secondItem="6Os-Rn-fUf" secondAttribute="trailing" symbolic="YES" id="rXi-9j-GfP"/>
-                            <constraint firstItem="MX9-uh-OiU" firstAttribute="top" secondItem="DrE-Hb-dqG" secondAttribute="bottom" constant="1" id="wNt-5G-Y7k"/>
+                            <constraint firstAttribute="trailing" secondItem="MX9-uh-OiU" secondAttribute="trailing" id="sKH-iP-2Yw"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="sPQ-4G-Mb9"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-49" id="uG9-je-5od"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="v45-vH-drJ"/>
+                            <constraint firstItem="MX9-uh-OiU" firstAttribute="top" secondItem="DrE-Hb-dqG" secondAttribute="bottom" id="wNt-5G-Y7k"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-49" id="wR1-qN-ZtP"/>
+                            <constraint firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="wb6-l0-IUW"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="SGi-C7-5NG"/>
+                                <exclude reference="4A3-Sk-JOw"/>
+                                <exclude reference="8mm-ve-f4k"/>
+                                <exclude reference="F7m-Sx-5bl"/>
+                                <exclude reference="I5e-26-TpS"/>
+                                <exclude reference="Pg3-9b-rif"/>
+                                <exclude reference="SEH-0b-xa6"/>
+                                <exclude reference="TjW-yA-uWk"/>
+                                <exclude reference="Tzu-u4-XNY"/>
+                                <exclude reference="UTW-uK-PKz"/>
+                                <exclude reference="ZTp-z2-ccB"/>
+                                <exclude reference="hk2-TP-xSe"/>
+                                <exclude reference="j7J-ns-wWe"/>
                                 <exclude reference="jNH-HH-CEr"/>
-                                <exclude reference="aqP-Me-YNg"/>
+                                <exclude reference="sPQ-4G-Mb9"/>
+                                <exclude reference="wb6-l0-IUW"/>
+                                <exclude reference="5mJ-tM-aeO"/>
+                                <exclude reference="HNa-sQ-3ol"/>
+                                <exclude reference="NeV-mS-FpU"/>
+                                <exclude reference="iHi-WC-1dj"/>
+                                <exclude reference="nOi-TF-v07"/>
+                                <exclude reference="r4E-n2-XgI"/>
+                                <exclude reference="B9X-9N-IhU"/>
+                                <exclude reference="Jks-xq-lpP"/>
+                                <exclude reference="Yb2-so-uPZ"/>
+                                <exclude reference="uG9-je-5od"/>
+                                <exclude reference="wR1-qN-ZtP"/>
                             </mask>
                         </variation>
                     </view>
