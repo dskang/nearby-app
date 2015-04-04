@@ -74,6 +74,21 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		B5C357E51ACF682B00D5D24A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		B5C357E61ACF684100D5D24A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		B5F2A49C1AAF1ED100FD405C = {
 			isa = PBXGroup;
 			children = (
@@ -98,8 +113,9 @@
 			isa = PBXGroup;
 			children = (
 				B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */,
-				B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */,
 				B5F2A4AE1AAF1ED100FD405C /* Main.storyboard */,
+				B5C357E51ACF682B00D5D24A /* Controllers */,
+				B5C357E61ACF684100D5D24A /* Models */,
 				B5F2A4B11AAF1ED100FD405C /* Images.xcassets */,
 				B5F2A4B31AAF1ED100FD405C /* LaunchScreen.xib */,
 				B5F2A4A81AAF1ED100FD405C /* Supporting Files */,
