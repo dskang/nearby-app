@@ -77,10 +77,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        if let user = PFUser.currentUser() {
+        if PFUser.currentUser() != nil {
             startUpdatingLocation()
-            getNearbyFriends()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
         }
+
         self.refreshControl = UIRefreshControl()
         self.refreshControl.addTarget(self, action: "getNearbyFriends", forControlEvents: UIControlEvents.ValueChanged)
         self.tableView.addSubview(refreshControl)
@@ -189,6 +190,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         })
         startUpdatingLocation()
         getNearbyFriends()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
     }
 
     // MARK: - CLLocationManagerDelegate
