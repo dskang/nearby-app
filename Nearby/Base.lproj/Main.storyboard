@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="MX9-uh-OiU">
-                                <rect key="frame" x="0.0" y="343" width="600" height="257"/>
+                                <rect key="frame" x="0.0" y="315" width="600" height="236"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="X88-JF-IzW"/>
@@ -61,7 +61,7 @@
                                 </connections>
                             </tableView>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="DrE-Hb-dqG">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="343"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="315"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -79,6 +79,7 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="Jks-xq-lpP"/>
                             <constraint firstAttribute="bottom" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="NQc-cY-TqY"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="NeV-mS-FpU"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="PR9-Jt-wKc"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="width" secondItem="MX9-uh-OiU" secondAttribute="height" multiplier="2:1" id="Pg3-9b-rif"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="SEH-0b-xa6"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="TjW-yA-uWk"/>
@@ -120,6 +121,7 @@
                                 <exclude reference="wb6-l0-IUW"/>
                                 <exclude reference="5mJ-tM-aeO"/>
                                 <exclude reference="HNa-sQ-3ol"/>
+                                <exclude reference="NQc-cY-TqY"/>
                                 <exclude reference="NeV-mS-FpU"/>
                                 <exclude reference="iHi-WC-1dj"/>
                                 <exclude reference="nOi-TF-v07"/>

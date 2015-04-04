@@ -58,6 +58,18 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
                 self.mapView.addAnnotation(annotation)
             }
 
+            if nearbyFriends.count == 0 {
+                let label = UILabel(frame: CGRectMake(0, 0, self.tableView.bounds.size.width, self.tableView.bounds.size.height))
+                label.text = "No friends are nearby."
+                label.textAlignment = NSTextAlignment.Center
+                label.sizeToFit()
+
+                self.tableView.backgroundView = label
+                self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+            } else {
+                self.tableView.backgroundView = nil
+                self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            }
             self.tableView.reloadData()
         }
     }
@@ -70,7 +82,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             getNearbyFriends()
         }
         self.refreshControl = UIRefreshControl()
-        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.refreshControl.addTarget(self, action: "getNearbyFriends", forControlEvents: UIControlEvents.ValueChanged)
         self.tableView.addSubview(refreshControl)
     }
