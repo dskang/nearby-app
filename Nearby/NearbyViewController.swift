@@ -23,7 +23,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0) {
         willSet {
             if userLocation.coordinate.latitude == 0 && userLocation.coordinate.longitude == 0 {
-                centerMapOnCoordinate(newValue.coordinate)
+                centerAndZoomMapOnCoordinate(newValue.coordinate)
             }
         }
         didSet {
@@ -144,7 +144,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         self.presentViewController(alertController, animated: true, completion: nil)
     }
 
-    func centerMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
+    func centerAndZoomMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
         let degree = (nearbyDistance + 50) / 111000.0
         let span = MKCoordinateSpan(latitudeDelta: degree, longitudeDelta: degree)
         let region = MKCoordinateRegion(center: coordinate, span: span)
@@ -222,7 +222,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friend = nearbyFriends[indexPath.row]
         let loc = userLocation(friend)
-        centerMapOnCoordinate(loc.coordinate)
+        mapView.setCenterCoordinate(loc.coordinate, animated: true)
     }
 }
 
