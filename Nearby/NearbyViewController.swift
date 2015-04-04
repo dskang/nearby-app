@@ -17,16 +17,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     @IBOutlet weak var tableView: UITableView!
 
     let locationManager = CLLocationManager()
-
+    let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
 
     var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0) {
         willSet {
             if userLocation.coordinate.latitude == 0 && userLocation.coordinate.longitude == 0 {
-                // Center map on user's location
-                let latitude = newValue.coordinate.latitude
-                let longitude = newValue.coordinate.longitude
-                centerMapOnLocation(latitude, longitude: longitude)
+                centerMapOnCoordinate(newValue.coordinate)
             }
         }
         didSet {
@@ -147,12 +144,19 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         self.presentViewController(alertController, animated: true, completion: nil)
     }
 
-    func centerMapOnLocation(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
-        let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    func centerMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
         let degree = (nearbyDistance + 50) / 111000.0
         let span = MKCoordinateSpan(latitudeDelta: degree, longitudeDelta: degree)
-        let region = MKCoordinateRegion(center: center, span: span)
+        let region = MKCoordinateRegion(center: coordinate, span: span)
         mapView.setRegion(region, animated: true)
+    }
+
+    func userLocation(user: PFUser) -> CLLocation {
+        let loc = user["location"] as [String: Double]
+        let coordinate = CLLocationCoordinate2D(latitude: loc["latitude"]!, longitude: loc["longitude"]!)
+        let timestamp = NSDate(timeIntervalSince1970: loc["timestamp"]!)
+        let horizontalAccuracy = loc["accuracy"]!
+        return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: horizontalAccuracy, verticalAccuracy: 0, timestamp: timestamp)
     }
 
     // MARK: - PFLogInViewControllerDelegate
@@ -202,6 +206,14 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
         let friend = nearbyFriends[indexPath.row]
         cell.textLabel!.text = friend["name"] as? String
+
+        let loc = userLocation(friend)
+        geocoder.reverseGeocodeLocation(loc, completionHandler: { placemarks, error in
+            if error == nil {
+                let placemark = placemarks[0] as CLPlacemark
+                cell.detailTextLabel!.text = placemark.name
+            }
+        })
         return cell
     }
 
@@ -209,10 +221,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friend = nearbyFriends[indexPath.row]
-        let location = friend["location"] as [String: Double]
-        let latitude = location["latitude"]!
-        let longitude = location["longitude"]!
-        centerMapOnLocation(latitude, longitude: longitude)
+        let loc = userLocation(friend)
+        centerMapOnCoordinate(loc.coordinate)
     }
 }
 
