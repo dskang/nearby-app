@@ -19,6 +19,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
+    var refreshControl: UIRefreshControl!
 
     var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0) {
         willSet {
@@ -54,10 +55,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
                 annotation.title = friend["name"] as String
                 annotation.subtitle = "\(timeAgo) ago"
                 annotation.coordinate = loc.coordinate
-                mapView.addAnnotation(annotation)
+                self.mapView.addAnnotation(annotation)
             }
 
-            tableView.reloadData()
+            self.tableView.reloadData()
         }
     }
 
@@ -68,6 +69,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             startUpdatingLocation()
             getNearbyFriends()
         }
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        self.refreshControl.addTarget(self, action: "getNearbyFriends", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(refreshControl)
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -118,6 +123,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
             (result, error) in
             self.nearbyFriends = result as [PFUser]
+            self.refreshControl?.endRefreshing()
         })
     }
 
