@@ -48,16 +48,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             nearbyFriends.sort({ ($0["name"] as String) < ($1["name"] as String) })
 
             for friend in nearbyFriends {
-                let location = friend["location"] as [String: Double]
-                let latitude = location["latitude"]!
-                let longitude = location["longitude"]!
-                let locationDate = NSDate(timeIntervalSince1970: location["timestamp"]!)
-                let timeAgo = locationDate.shortTimeAgoSinceNow()
+                let loc = userLocation(friend)
+                let timeAgo = loc.timestamp.shortTimeAgoSinceNow()
                 let annotation = MKPointAnnotation()
                 annotation.title = friend["name"] as String
                 annotation.subtitle = "\(timeAgo) ago"
-                annotation.coordinate.latitude = latitude
-                annotation.coordinate.longitude = longitude
+                annotation.coordinate = loc.coordinate
                 mapView.addAnnotation(annotation)
             }
 
@@ -223,6 +219,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         let friend = nearbyFriends[indexPath.row]
         let loc = userLocation(friend)
         mapView.setCenterCoordinate(loc.coordinate, animated: true)
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 }
 
