@@ -21,6 +21,7 @@ class User: PFUser, PFSubclassing {
     @NSManaged var fbId: String
     @NSManaged var name: String
     @NSManaged var location: [String: Double]
+    @NSManaged var hideLocation: Bool
 
     var loc: CLLocation {
         let coordinate = CLLocationCoordinate2D(latitude: location["latitude"]!, longitude: location["longitude"]!)
