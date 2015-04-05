@@ -163,7 +163,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
         let user = User.currentUser()
         if user != nil && user.hideLocation {
-            showMessageInTable("You cannot view friends in Stealth Mode.")
+            showMessageInTable("Nearby friends are hidden in Stealth Mode.")
             if refreshControl.superview != nil {
                 refreshControl.removeFromSuperview()
             }
