@@ -62,6 +62,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
+        NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.stealthModeOn, object: nil, queue: nil, usingBlock: { notification in
+            self.mapView.showsUserLocation = false
+        })
+        NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.stealthModeOff, object: nil, queue: nil, usingBlock: { notification in
+            self.mapView.showsUserLocation = true
+        })
 
         if User.currentUser() != nil {
             locationRelay.startUpdatingLocation()
