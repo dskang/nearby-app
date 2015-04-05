@@ -22,6 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.setApplicationId("qezEspdd6WnEHMneZCr9gt9sUFzUQzAjhx03xfuQ", clientKey: "wZj94Bzosernq83Z5267e6k9lVcozPYWwCdNe3xI")
         PFFacebookUtils.initializeFacebook()
 
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "showLocationDisabledAlert", name: GlobalConstants.NotificationKey.disabledLocation, object: nil)
+
         return true
     }
 
@@ -42,6 +44,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         FBAppCall.handleDidBecomeActiveWithSession(PFFacebookUtils.session())
+
+        let status = CLLocationManager.authorizationStatus()
+        if status == .Denied || status == .Restricted {
+            self.showLocationDisabledAlert()
+        }
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -54,6 +61,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      annotation: AnyObject?) -> Bool {
         return FBAppCall.handleOpenURL(url, sourceApplication:sourceApplication,
             withSession:PFFacebookUtils.session())
+    }
+
+    func showLocationDisabledAlert() {
+        let alertController = UIAlertController(
+            title: "Background Location Access Disabled",
+            message: "In order to be notified about nearby friends, please open this app's settings and set location access to 'Always'.",
+            preferredStyle: .Alert)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+
+        let openAction = UIAlertAction(title: "Open Settings", style: .Default) { (action) in
+            if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
+                UIApplication.sharedApplication().openURL(url)
+            }
+        }
+        alertController.addAction(openAction)
+
+        self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+    }
+}
+
+struct GlobalConstants {
+    struct NotificationKey {
+        static let disabledLocation = "com.dskang.disabledLocationNotification"
     }
 }
 

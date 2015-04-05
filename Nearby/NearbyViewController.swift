@@ -70,13 +70,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil, usingBlock: { notification in
-            let status = CLLocationManager.authorizationStatus()
-            if status == .Denied || status == .Restricted {
-                self.showLocationDisabledAlert()
-            }
-        })
-
         if User.currentUser() != nil {
             startUpdatingLocation()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
@@ -122,7 +115,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
             case .Restricted, .Denied:
-                showLocationDisabledAlert()
+                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.disabledLocation, object: self)
             default:
                 break
             }
@@ -135,25 +128,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             self.nearbyFriends = result as [User]
             self.refreshControl?.endRefreshing()
         })
-    }
-
-    func showLocationDisabledAlert() {
-        let alertController = UIAlertController(
-            title: "Background Location Access Disabled",
-            message: "In order to be notified about nearby friends, please open this app's settings and set location access to 'Always'.",
-            preferredStyle: .Alert)
-
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        alertController.addAction(cancelAction)
-
-        let openAction = UIAlertAction(title: "Open Settings", style: .Default) { (action) in
-            if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
-                UIApplication.sharedApplication().openURL(url)
-            }
-        }
-        alertController.addAction(openAction)
-
-        self.presentViewController(alertController, animated: true, completion: nil)
     }
 
     func centerAndZoomMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
