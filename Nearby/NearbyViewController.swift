@@ -20,6 +20,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
+    var stealthMode = false
 
     var refreshNearbyFriendsOnActive: Bool = false {
         willSet {
@@ -42,18 +43,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 mapView.addAnnotation(friend.annotation)
             }
 
-            if nearbyFriends.count == 0 {
-                let label = UILabel(frame: CGRectMake(0, 0, tableView.bounds.size.width, tableView.bounds.size.height))
-                label.text = "No friends are nearby."
-                label.textAlignment = NSTextAlignment.Center
-                label.sizeToFit()
-
-                tableView.backgroundView = label
-                tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-            } else {
-                tableView.backgroundView = nil
-                tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
-            }
             tableView.reloadData()
         }
     }
@@ -62,12 +51,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
-        NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.stealthModeOn, object: nil, queue: nil, usingBlock: { notification in
-            self.mapView.showsUserLocation = false
-        })
-        NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.stealthModeOff, object: nil, queue: nil, usingBlock: { notification in
-            self.mapView.showsUserLocation = true
-        })
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
         if User.currentUser() != nil {
             locationRelay.startUpdatingLocation()
@@ -113,6 +98,36 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
     }
 
+    func enableStealthMode() {
+        stealthMode = true
+        mapView.showsUserLocation = false
+        refreshNearbyFriendsOnActive = false
+        mapView.removeAnnotations(mapView.annotations)
+    }
+
+    func disableStealthMode() {
+        stealthMode = false
+        mapView.showsUserLocation = true
+        refreshNearbyFriendsOnActive = true
+        getNearbyFriends()
+    }
+
+    func showMessageInTable(message: String) {
+        let label = UILabel(frame: CGRectMake(0, 0, tableView.bounds.size.width, tableView.bounds.size.height))
+        label.text = message
+        label.numberOfLines = 0
+        label.textAlignment = NSTextAlignment.Center
+        label.sizeToFit()
+
+        tableView.backgroundView = label
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+    }
+
+    func hideMessageInTable() {
+        tableView.backgroundView = nil
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+    }
+
     func getNearbyFriends() {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
             (result, error) in
@@ -149,6 +164,19 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     }
 
     // MARK: - UITableViewDataSource
+
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if stealthMode {
+            showMessageInTable("You cannot view friends in Stealth Mode.")
+            return 0;
+        } else if nearbyFriends.count == 0 {
+            showMessageInTable("No friends are nearby.")
+            return 0;
+        } else {
+            hideMessageInTable()
+            return 1;
+        }
+    }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return nearbyFriends.count
