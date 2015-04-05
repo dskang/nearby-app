@@ -70,6 +70,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil, usingBlock: { notification in
+            let status = CLLocationManager.authorizationStatus()
+            if status == .Denied || status == .Restricted {
+                self.showLocationDisabledAlert()
+            }
+        })
+
         if User.currentUser() != nil {
             startUpdatingLocation()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
@@ -115,7 +122,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
             case .Restricted, .Denied:
-                // TODO: Check if location disabled when the user returns to the app after it's already open
                 showLocationDisabledAlert()
             default:
                 break
