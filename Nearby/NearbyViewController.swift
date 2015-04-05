@@ -104,14 +104,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
     func startUpdatingLocation() {
         if CLLocationManager.locationServicesEnabled() {
-            mapView.showsUserLocation = true
-
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.distanceFilter = kCLDistanceFilterNone
 
             switch CLLocationManager.authorizationStatus() {
             case .AuthorizedAlways:
+                mapView.showsUserLocation = true
                 locationManager.startUpdatingLocation()
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
@@ -182,6 +181,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedAlways {
+            mapView.showsUserLocation = true
             locationManager.startUpdatingLocation()
         }
     }
@@ -219,8 +219,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friend = self.nearbyFriends[indexPath.row]
-        self.mapView.showAnnotations([friend.annotation], animated: true)
         self.mapView.selectAnnotation(friend.annotation, animated: true)
+        self.mapView.showAnnotations([friend.annotation], animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 }
