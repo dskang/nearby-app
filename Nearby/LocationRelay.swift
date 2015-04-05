@@ -12,17 +12,6 @@ import CoreLocation
 class LocationRelay: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
 
-    override init() {
-        super.init()
-
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.distanceFilter = kCLDistanceFilterNone
-
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "stopUpdatingLocation", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startUpdatingLocation", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
-    }
-
     dynamic var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0) {
         didSet {
             let user = User.currentUser()
@@ -37,6 +26,10 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     }
 
     func startUpdatingLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = kCLDistanceFilterNone
+
         // TODO: Check for location services in delegate and create alert if disabled
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {

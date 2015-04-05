@@ -300,6 +300,7 @@
                     <navigationItem key="navigationItem" title="Me" id="VAp-6B-X30"/>
                     <connections>
                         <outlet property="logOutCell" destination="Qu7-TS-6Mj" id="5Tk-kL-Ir5"/>
+                        <outlet property="stealthModeSwitch" destination="BzQ-Re-BXb" id="b9V-XB-D96"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IVh-wb-b9I" userLabel="First Responder" sceneMemberID="firstResponder"/>

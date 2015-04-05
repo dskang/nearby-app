@@ -11,13 +11,31 @@ import Foundation
 class MeViewController: UITableViewController {
 
     @IBOutlet weak var logOutCell: UITableViewCell!
+    @IBOutlet weak var stealthModeSwitch: UISwitch!
+
+    var stealthMode: Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey("stealthMode")
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: "stealthMode")
+            var key: String
+            if newValue {
+                key = GlobalConstants.NotificationKey.stealthModeOn
+            } else {
+                key = GlobalConstants.NotificationKey.stealthModeOff
+            }
+            NSNotificationCenter.defaultCenter().postNotificationName(key, object: self)
+        }
+    }
 
     @IBAction func stealthModeToggled(sender: UISwitch) {
-        if sender.on {
-            NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.stealthModeOn, object: self)
-        } else {
-            NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.stealthModeOff, object: self)
-        }
+        stealthMode = sender.on
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        stealthModeSwitch.on = stealthMode
     }
 
     // MARK: - UITableViewDelegate

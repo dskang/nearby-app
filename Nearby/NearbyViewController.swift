@@ -20,7 +20,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
-    var stealthMode = false
+    var stealthMode: Bool {
+        return NSUserDefaults.standardUserDefaults().boolForKey("stealthMode")
+    }
 
     var refreshNearbyFriendsOnActive: Bool = false {
         willSet {
@@ -54,9 +56,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
-        if User.currentUser() != nil {
+        if User.currentUser() != nil && !stealthMode {
             locationRelay.startUpdatingLocation()
-            mapView.showsUserLocation = true
             refreshNearbyFriendsOnActive = true
         }
 
@@ -69,7 +70,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         super.viewDidAppear(animated)
 
         if User.currentUser() == nil {
-            // Create the log in view controller
             let logInController = PFLogInViewController()
             logInController.delegate = self
             logInController.facebookPermissions = ["user_friends"]
@@ -77,7 +77,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             // TODO: Handle user denying "user_friends" permission
             // TODO: Handle user cancelling log in
 
-            // Present the log in view controller
             presentViewController(logInController, animated: true, completion: nil)
         }
     }
@@ -99,14 +98,14 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     }
 
     func enableStealthMode() {
-        stealthMode = true
+        locationRelay.stopUpdatingLocation()
         mapView.showsUserLocation = false
         refreshNearbyFriendsOnActive = false
         mapView.removeAnnotations(mapView.annotations)
     }
 
     func disableStealthMode() {
-        stealthMode = false
+        locationRelay.startUpdatingLocation()
         mapView.showsUserLocation = true
         refreshNearbyFriendsOnActive = true
         getNearbyFriends()
