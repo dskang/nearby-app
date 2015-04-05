@@ -23,13 +23,13 @@ class MeViewController: UITableViewController {
     // MARK: - UITableViewDelegate
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
         if cell == logOutCell {
             User.logOut()
-            let nearbyVC = self.tabBarController?.viewControllers![0] as NearbyViewController
+            let nearbyVC = tabBarController?.viewControllers![0] as NearbyViewController
             nearbyVC.refreshNearbyFriendsOnActive = false
-            self.tabBarController?.selectedViewController = nearbyVC
+            tabBarController?.selectedViewController = nearbyVC
         }
     }
 }

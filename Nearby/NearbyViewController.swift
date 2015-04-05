@@ -39,39 +39,39 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 friend.annotation.title = friend.name
                 friend.annotation.subtitle = "\(timeAgo) ago"
                 friend.annotation.coordinate = friend.loc.coordinate
-                self.mapView.addAnnotation(friend.annotation)
+                mapView.addAnnotation(friend.annotation)
             }
 
             if nearbyFriends.count == 0 {
-                let label = UILabel(frame: CGRectMake(0, 0, self.tableView.bounds.size.width, self.tableView.bounds.size.height))
+                let label = UILabel(frame: CGRectMake(0, 0, tableView.bounds.size.width, tableView.bounds.size.height))
                 label.text = "No friends are nearby."
                 label.textAlignment = NSTextAlignment.Center
                 label.sizeToFit()
 
-                self.tableView.backgroundView = label
-                self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+                tableView.backgroundView = label
+                tableView.separatorStyle = UITableViewCellSeparatorStyle.None
             } else {
-                self.tableView.backgroundView = nil
-                self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+                tableView.backgroundView = nil
+                tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
             }
-            self.tableView.reloadData()
+            tableView.reloadData()
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
+        locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
 
         if User.currentUser() != nil {
             locationRelay.startUpdatingLocation()
-            self.mapView.showsUserLocation = true
-            self.refreshNearbyFriendsOnActive = true
+            mapView.showsUserLocation = true
+            refreshNearbyFriendsOnActive = true
         }
 
-        self.refreshControl = UIRefreshControl()
-        self.refreshControl.addTarget(self, action: "getNearbyFriends", forControlEvents: UIControlEvents.ValueChanged)
-        self.tableView.addSubview(refreshControl)
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "getNearbyFriends", forControlEvents: UIControlEvents.ValueChanged)
+        tableView.addSubview(refreshControl)
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -87,7 +87,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             // TODO: Handle user cancelling log in
 
             // Present the log in view controller
-            self.presentViewController(logInController, animated: true, completion: nil)
+            presentViewController(logInController, animated: true, completion: nil)
         }
     }
 
@@ -101,7 +101,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             let oldLocation = change[NSKeyValueChangeOldKey] as CLLocation
             let newLocation = change[NSKeyValueChangeNewKey] as CLLocation
             if oldLocation.coordinate.latitude == 0 && oldLocation.coordinate.longitude == 0 {
-                self.mapView.showsUserLocation = true
+                mapView.showsUserLocation = true
                 centerAndZoomMapOnCoordinate(newLocation.coordinate)
             }
         }
@@ -125,7 +125,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - PFLogInViewControllerDelegate
 
     func logInViewController(logInController: PFLogInViewController!, didLogInUser user: User!) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
         FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
             if error == nil {
                 let userData = result as [NSObject: AnyObject]
@@ -139,7 +139,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         })
         locationRelay.startUpdatingLocation()
         getNearbyFriends()
-        self.refreshNearbyFriendsOnActive = true
+        refreshNearbyFriendsOnActive = true
     }
 
     // MARK: - UITableViewDataSource
@@ -151,9 +151,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
         var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
-        let friend = self.nearbyFriends[indexPath.row]
+        let friend = nearbyFriends[indexPath.row]
         cell.textLabel!.text = friend.name
-        self.geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
+        geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
             if error == nil {
                 let placemark = placemarks[0] as CLPlacemark
                 cell.detailTextLabel!.text = placemark.name
@@ -165,9 +165,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - UITableViewDelegate
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let friend = self.nearbyFriends[indexPath.row]
-        self.mapView.selectAnnotation(friend.annotation, animated: true)
-        self.mapView.showAnnotations([friend.annotation], animated: true)
+        let friend = nearbyFriends[indexPath.row]
+        mapView.selectAnnotation(friend.annotation, animated: true)
+        mapView.showAnnotations([friend.annotation], animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 }

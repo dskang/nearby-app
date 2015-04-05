@@ -57,7 +57,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let locationChanged = userLocation.distanceFromLocation(location) > 5
         if recent && locationChanged {
-            self.userLocation = location
+            userLocation = location
         }
     }
 }
