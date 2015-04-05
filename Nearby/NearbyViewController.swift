@@ -28,34 +28,27 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             }
         }
         didSet {
-            let timestamp = userLocation.timestamp.timeIntervalSince1970
-            let latitude = userLocation.coordinate.latitude
-            let longitude = userLocation.coordinate.longitude
-            let accuracy = userLocation.horizontalAccuracy
-            let location: [String: Double] = [
-                "timestamp": timestamp,
-                "latitude": latitude,
-                "longitude": longitude,
-                "accuracy": accuracy
+            let user = User.currentUser()
+            user.location = [
+                "timestamp": userLocation.timestamp.timeIntervalSince1970,
+                "latitude": userLocation.coordinate.latitude,
+                "longitude": userLocation.coordinate.longitude,
+                "accuracy": userLocation.horizontalAccuracy
             ]
-            let user = PFUser.currentUser()
-            user["location"] = location
             user.saveInBackground()
         }
     }
 
-    var nearbyFriends: [PFUser] = [] {
+    var nearbyFriends: [User] = [] {
         didSet {
-            nearbyFriends.sort({ ($0["name"] as String) < ($1["name"] as String) })
+            nearbyFriends.sort({ $0.name < $1.name })
 
             for friend in nearbyFriends {
-                let loc = userLocation(friend)
-                let timeAgo = loc.timestamp.shortTimeAgoSinceNow()
-                let annotation = MKPointAnnotation()
-                annotation.title = friend["name"] as String
-                annotation.subtitle = "\(timeAgo) ago"
-                annotation.coordinate = loc.coordinate
-                self.mapView.addAnnotation(annotation)
+                let timeAgo = friend.loc.timestamp.shortTimeAgoSinceNow()
+                friend.annotation.title = friend.name
+                friend.annotation.subtitle = "\(timeAgo) ago"
+                friend.annotation.coordinate = friend.loc.coordinate
+                self.mapView.addAnnotation(friend.annotation)
             }
 
             if nearbyFriends.count == 0 {
@@ -77,7 +70,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        if PFUser.currentUser() != nil {
+        if User.currentUser() != nil {
             startUpdatingLocation()
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
         }
@@ -90,7 +83,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
-        if PFUser.currentUser() == nil {
+        if User.currentUser() == nil {
             // Create the log in view controller
             let logInController = PFLogInViewController()
             logInController.delegate = self
@@ -134,7 +127,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     func getNearbyFriends() {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
             (result, error) in
-            self.nearbyFriends = result as [PFUser]
+            self.nearbyFriends = result as [User]
             self.refreshControl?.endRefreshing()
         })
     }
@@ -165,25 +158,17 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         mapView.setRegion(region, animated: true)
     }
 
-    func userLocation(user: PFUser) -> CLLocation {
-        let loc = user["location"] as [String: Double]
-        let coordinate = CLLocationCoordinate2D(latitude: loc["latitude"]!, longitude: loc["longitude"]!)
-        let timestamp = NSDate(timeIntervalSince1970: loc["timestamp"]!)
-        let horizontalAccuracy = loc["accuracy"]!
-        return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: horizontalAccuracy, verticalAccuracy: 0, timestamp: timestamp)
-    }
-
     // MARK: - PFLogInViewControllerDelegate
 
-    func logInViewController(logInController: PFLogInViewController!, didLogInUser user: PFUser!) {
+    func logInViewController(logInController: PFLogInViewController!, didLogInUser user: User!) {
         self.dismissViewControllerAnimated(true, completion: nil)
         FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
             if error == nil {
                 let userData = result as [NSObject: AnyObject]
                 let name = userData["name"] as String
                 let facebookID = userData["id"] as String
-                user["name"] = name
-                user["fbID"] = facebookID
+                user.name = name
+                user.fbId = facebookID
                 user.saveInBackground()
             }
             // TODO: Retry getting user's data at later point if request fails
@@ -206,7 +191,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let locationChanged = userLocation.distanceFromLocation(location) > 5
         if recent && locationChanged {
-            userLocation = location
+            self.userLocation = location
         }
     }
 
@@ -219,11 +204,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
         var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
-        let friend = nearbyFriends[indexPath.row]
-        cell.textLabel!.text = friend["name"] as? String
-
-        let loc = userLocation(friend)
-        geocoder.reverseGeocodeLocation(loc, completionHandler: { placemarks, error in
+        let friend = self.nearbyFriends[indexPath.row]
+        cell.textLabel!.text = friend.name
+        self.geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
             if error == nil {
                 let placemark = placemarks[0] as CLPlacemark
                 cell.detailTextLabel!.text = placemark.name
@@ -235,9 +218,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     // MARK: - UITableViewDelegate
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let friend = nearbyFriends[indexPath.row]
-        let loc = userLocation(friend)
-        mapView.setCenterCoordinate(loc.coordinate, animated: true)
+        let friend = self.nearbyFriends[indexPath.row]
+        self.mapView.showAnnotations([friend.annotation], animated: true)
+        self.mapView.selectAnnotation(friend.annotation, animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 }
