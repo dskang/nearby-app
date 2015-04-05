@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B56838981AD0BC6B002D0F34 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56838971AD0BC6B002D0F34 /* User.swift */; };
+		B568389A1AD0EF94002D0F34 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56838991AD0EF94002D0F34 /* MeViewController.swift */; };
 		B5A400631AC1CEF000E6913D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A400621AC1CEF000E6913D /* CoreLocation.framework */; };
 		B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */; };
 		B5F2A4AD1AAF1ED100FD405C /* NearbyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */; };
@@ -33,6 +34,7 @@
 		514AA05B58346A9EE5B1BB8C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		584FC7E0B4D1C214DCB0BB78 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B56838971AD0BC6B002D0F34 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		B56838991AD0EF94002D0F34 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		B5A400621AC1CEF000E6913D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B5F2A4A51AAF1ED100FD405C /* Nearby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nearby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F2A4A91AAF1ED100FD405C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */,
+				B56838991AD0EF94002D0F34 /* MeViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 			files = (
 				B5F2A4AD1AAF1ED100FD405C /* NearbyViewController.swift in Sources */,
 				B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */,
+				B568389A1AD0EF94002D0F34 /* MeViewController.swift in Sources */,
 				B56838981AD0BC6B002D0F34 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
