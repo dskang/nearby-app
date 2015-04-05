@@ -11,31 +11,22 @@ import Parse
 import CoreLocation
 import MapKit
 
-class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLLocationManagerDelegate, UITableViewDataSource, UITableViewDelegate {
+class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
 
-    let locationManager = CLLocationManager()
+    let locationRelay = LocationRelay()
     let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
 
-    var userLocation: CLLocation = CLLocation(latitude: 0, longitude: 0) {
+    var refreshNearbyFriendsOnActive: Bool = false {
         willSet {
-            if userLocation.coordinate.latitude == 0 && userLocation.coordinate.longitude == 0 {
-                centerAndZoomMapOnCoordinate(newValue.coordinate)
+            NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
+            if newValue == true {
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
             }
-        }
-        didSet {
-            let user = User.currentUser()
-            user.location = [
-                "timestamp": userLocation.timestamp.timeIntervalSince1970,
-                "latitude": userLocation.coordinate.latitude,
-                "longitude": userLocation.coordinate.longitude,
-                "accuracy": userLocation.horizontalAccuracy
-            ]
-            user.saveInBackground()
         }
     }
 
@@ -70,9 +61,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        self.locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
+
         if User.currentUser() != nil {
-            startUpdatingLocation()
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
+            locationRelay.startUpdatingLocation()
+            self.mapView.showsUserLocation = true
+            self.refreshNearbyFriendsOnActive = true
         }
 
         self.refreshControl = UIRefreshControl()
@@ -102,22 +96,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
         // Dispose of any resources that can be recreated.
     }
 
-    func startUpdatingLocation() {
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.distanceFilter = kCLDistanceFilterNone
-
-            switch CLLocationManager.authorizationStatus() {
-            case .AuthorizedAlways:
-                mapView.showsUserLocation = true
-                locationManager.startUpdatingLocation()
-            case .NotDetermined:
-                locationManager.requestAlwaysAuthorization()
-            case .Restricted, .Denied:
-                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.disabledLocation, object: self)
-            default:
-                break
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        if keyPath == "userLocation" {
+            let oldLocation = change[NSKeyValueChangeOldKey] as CLLocation
+            let newLocation = change[NSKeyValueChangeNewKey] as CLLocation
+            if oldLocation.coordinate.latitude == 0 && oldLocation.coordinate.longitude == 0 {
+                self.mapView.showsUserLocation = true
+                centerAndZoomMapOnCoordinate(newLocation.coordinate)
             }
         }
     }
@@ -152,27 +137,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, CLL
             }
             // TODO: Retry getting user's data at later point if request fails
         })
-        startUpdatingLocation()
+        locationRelay.startUpdatingLocation()
         getNearbyFriends()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
-    }
-
-    // MARK: - CLLocationManagerDelegate
-
-    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .AuthorizedAlways {
-            mapView.showsUserLocation = true
-            locationManager.startUpdatingLocation()
-        }
-    }
-
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        let location = locations.last as CLLocation
-        let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
-        let locationChanged = userLocation.distanceFromLocation(location) > 5
-        if recent && locationChanged {
-            self.userLocation = location
-        }
+        self.refreshNearbyFriendsOnActive = true
     }
 
     // MARK: - UITableViewDataSource

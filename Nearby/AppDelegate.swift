@@ -86,6 +86,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 struct GlobalConstants {
     struct NotificationKey {
         static let disabledLocation = "com.dskang.disabledLocationNotification"
+        static let stealthModeOn = "com.dskang.stealthModeOnNotification"
+        static let stealthModeOff = "com.dskang.stealthModeOffNotification"
     }
 }
 

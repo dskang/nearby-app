@@ -7,11 +7,18 @@
 //
 
 import Foundation
-import Parse
 
 class MeViewController: UITableViewController {
 
     @IBOutlet weak var logOutCell: UITableViewCell!
+
+    @IBAction func stealthModeToggled(sender: UISwitch) {
+        if sender.on {
+            NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.stealthModeOn, object: self)
+        } else {
+            NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.stealthModeOff, object: self)
+        }
+    }
 
     // MARK: - UITableViewDelegate
 
@@ -21,7 +28,7 @@ class MeViewController: UITableViewController {
         if cell == logOutCell {
             User.logOut()
             let nearbyVC = self.tabBarController?.viewControllers![0] as NearbyViewController
-            NSNotificationCenter.defaultCenter().removeObserver(nearbyVC, name: "UIApplicationDidBecomeActiveNotification", object: nil)
+            nearbyVC.refreshNearbyFriendsOnActive = false
             self.tabBarController?.selectedViewController = nearbyVC
         }
     }

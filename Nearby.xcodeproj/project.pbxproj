@@ -10,6 +10,7 @@
 		B56838981AD0BC6B002D0F34 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56838971AD0BC6B002D0F34 /* User.swift */; };
 		B568389A1AD0EF94002D0F34 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56838991AD0EF94002D0F34 /* MeViewController.swift */; };
 		B5A400631AC1CEF000E6913D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A400621AC1CEF000E6913D /* CoreLocation.framework */; };
+		B5A4B4131AD1849A0098F24D /* LocationRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A4B4121AD1849A0098F24D /* LocationRelay.swift */; };
 		B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */; };
 		B5F2A4AD1AAF1ED100FD405C /* NearbyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */; };
 		B5F2A4B01AAF1ED100FD405C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5F2A4AE1AAF1ED100FD405C /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 		B56838971AD0BC6B002D0F34 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B56838991AD0EF94002D0F34 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		B5A400621AC1CEF000E6913D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		B5A4B4121AD1849A0098F24D /* LocationRelay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationRelay.swift; sourceTree = "<group>"; };
 		B5F2A4A51AAF1ED100FD405C /* Nearby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nearby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F2A4A91AAF1ED100FD405C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				B56838971AD0BC6B002D0F34 /* User.swift */,
+				B5A4B4121AD1849A0098F24D /* LocationRelay.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 				TargetAttributes = {
 					B5F2A4A41AAF1ED100FD405C = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = WKRZ8G7B5R;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -305,6 +309,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F2A4AD1AAF1ED100FD405C /* NearbyViewController.swift in Sources */,
+				B5A4B4131AD1849A0098F24D /* LocationRelay.swift in Sources */,
 				B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */,
 				B568389A1AD0EF94002D0F34 /* MeViewController.swift in Sources */,
 				B56838981AD0BC6B002D0F34 /* User.swift in Sources */,
@@ -434,9 +439,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Nearby/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Nearby/Nearby-Bridging-Header.h";
 			};
 			name = Debug;
@@ -447,9 +454,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Nearby/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Nearby/Nearby-Bridging-Header.h";
 			};
 			name = Release;
