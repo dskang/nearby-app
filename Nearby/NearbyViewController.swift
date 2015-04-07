@@ -17,49 +17,29 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     @IBOutlet weak var tableView: UITableView!
 
     let locationRelay = LocationRelay()
+    let nearbyFriendsManager = NearbyFriendsManager()
     let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
-
-    var refreshNearbyFriendsOnActive: Bool = false {
-        willSet {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
-            if newValue == true {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "getNearbyFriends", name: "UIApplicationDidBecomeActiveNotification", object: nil)
-            }
-        }
-    }
-
-    var nearbyFriends: [User] = [] {
-        didSet {
-            nearbyFriends.sort({ $0.name < $1.name })
-            for friend in nearbyFriends {
-                let timeAgo = friend.loc.timestamp.shortTimeAgoSinceNow()
-                friend.annotation.title = friend.name
-                friend.annotation.subtitle = "\(timeAgo) ago"
-                friend.annotation.coordinate = friend.loc.coordinate
-                mapView.addAnnotation(friend.annotation)
-            }
-            tableView.reloadData()
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
+        nearbyFriendsManager.addObserver(self, forKeyPath: "nearbyFriends", options: NSKeyValueObservingOptions.allZeros, context: nil)
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
         if let user = User.currentUser() {
             if !user.hideLocation {
-                locationRelay.startUpdatingLocation()
-                refreshNearbyFriendsOnActive = true
+                locationRelay.startUpdates()
+                nearbyFriendsManager.startUpdates()
             }
         }
 
         refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "getNearbyFriends", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self.nearbyFriendsManager, action: "update", forControlEvents: UIControlEvents.ValueChanged)
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -96,36 +76,30 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if oldLocation == nil && newLocation != nil {
                 mapView.showsUserLocation = true
                 centerAndZoomMapOnCoordinate(newLocation!.coordinate)
-                getNearbyFriends()
+                nearbyFriendsManager.update()
             }
+        } else if keyPath == "nearbyFriends" {
+            refreshControl?.endRefreshing()
+            for friend in nearbyFriendsManager.nearbyFriends {
+                mapView.addAnnotation(friend.annotation)
+            }
+            tableView.reloadData()
         }
     }
 
     func enableStealthMode() {
-        locationRelay.stopUpdatingLocation()
+        locationRelay.stopUpdates()
+        locationRelay.userLocation = nil
         mapView.showsUserLocation = false
-        refreshNearbyFriendsOnActive = false
+        nearbyFriendsManager.stopUpdates()
         mapView.removeAnnotations(mapView.annotations)
     }
 
     func disableStealthMode() {
-        locationRelay.startUpdatingLocation()
+        locationRelay.startUpdates()
         mapView.showsUserLocation = true
-        refreshNearbyFriendsOnActive = true
-        getNearbyFriends()
-    }
-
-    func getNearbyFriends() {
-        PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
-            (result, error) in
-            if error == nil {
-                self.nearbyFriends = result as [User]
-                self.refreshControl?.endRefreshing()
-            } else {
-                let message = error.userInfo!["error"] as String
-                println(message)
-            }
-        })
+        nearbyFriendsManager.startUpdates()
+        nearbyFriendsManager.update()
     }
 
     // MARK: - PFLogInViewControllerDelegate
@@ -143,8 +117,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
             // TODO: Retry getting user's data at later point if request fails
         })
-        locationRelay.startUpdatingLocation()
-        refreshNearbyFriendsOnActive = true
+        locationRelay.startUpdates()
+        nearbyFriendsManager.startUpdates()
     }
 
     // MARK: - UITableViewDataSource
@@ -173,7 +147,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 refreshControl.removeFromSuperview()
             }
             return 0;
-        } else if nearbyFriends.count == 0 {
+        } else if nearbyFriendsManager.nearbyFriends.count == 0 {
             showMessageInTable("No friends are nearby.")
             if refreshControl.superview == nil {
                 tableView.addSubview(refreshControl)
@@ -189,13 +163,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nearbyFriends.count
+        return nearbyFriendsManager.nearbyFriends.count
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
         var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
-        let friend = nearbyFriends[indexPath.row]
+        let friend = nearbyFriendsManager.nearbyFriends[indexPath.row]
         cell.textLabel!.text = friend.name
         geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
             if error == nil {
@@ -209,7 +183,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - UITableViewDelegate
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let friend = nearbyFriends[indexPath.row]
+        let friend = nearbyFriendsManager.nearbyFriends[indexPath.row]
         mapView.showAnnotations([friend.annotation], animated: true)
         // Delay to make sure all of callout fits on screen after centering
         delay(0.2) {

@@ -27,7 +27,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    func startUpdatingLocation() {
+    func startUpdates() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.distanceFilter = kCLDistanceFilterNone
@@ -47,7 +47,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    func stopUpdatingLocation() {
+    func stopUpdates() {
         locationManager.stopUpdatingLocation()
     }
 
