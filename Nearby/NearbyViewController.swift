@@ -34,7 +34,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         if let user = User.currentUser() {
             if !user.hideLocation {
                 locationRelay.startUpdates()
-                nearbyFriendsManager.startUpdates()
             }
         }
 
@@ -76,7 +75,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if oldLocation == nil && newLocation != nil {
                 mapView.showsUserLocation = true
                 centerAndZoomMapOnCoordinate(newLocation!.coordinate)
-                nearbyFriendsManager.update()
+                nearbyFriendsManager.startUpdates()
             }
         } else if keyPath == "nearbyFriends" {
             refreshControl?.endRefreshing()
@@ -98,8 +97,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     func disableStealthMode() {
         locationRelay.startUpdates()
         mapView.showsUserLocation = true
-        nearbyFriendsManager.startUpdates()
-        nearbyFriendsManager.update()
     }
 
     // MARK: - PFLogInViewControllerDelegate
@@ -118,7 +115,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             // TODO: Retry getting user's data at later point if request fails
         })
         locationRelay.startUpdates()
-        nearbyFriendsManager.startUpdates()
     }
 
     // MARK: - UITableViewDataSource

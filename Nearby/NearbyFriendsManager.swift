@@ -44,6 +44,7 @@ class NearbyFriendsManager: NSObject {
     }
 
     func startUpdates() {
+        update()
         updateNearbyFriendsOnActive = true
     }
 
