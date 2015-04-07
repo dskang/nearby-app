@@ -205,8 +205,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friend = nearbyFriends[indexPath.row]
-        mapView.selectAnnotation(friend.annotation, animated: true)
         mapView.showAnnotations([friend.annotation], animated: true)
+        // Delay to make sure all of callout fits on screen after centering
+        delay(0.2) {
+            self.mapView.selectAnnotation(friend.annotation, animated: true)
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 }
