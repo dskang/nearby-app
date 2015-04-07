@@ -20,6 +20,8 @@ class User: PFUser, PFSubclassing {
 
     @NSManaged var fbId: String
     @NSManaged var name: String
+    @NSManaged var firstName: String
+    @NSManaged var lastName: String
     @NSManaged var location: [String: Double]
     @NSManaged var hideLocation: Bool
 

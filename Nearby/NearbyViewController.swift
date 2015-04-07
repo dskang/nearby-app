@@ -91,11 +91,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
 
         if keyPath == "userLocation" {
-            let oldLocation = change[NSKeyValueChangeOldKey] as CLLocation
-            let newLocation = change[NSKeyValueChangeNewKey] as CLLocation
-            if oldLocation.coordinate.latitude == 0 && oldLocation.coordinate.longitude == 0 {
+            let oldLocation = change[NSKeyValueChangeOldKey] as? CLLocation
+            let newLocation = change[NSKeyValueChangeNewKey] as? CLLocation
+            if oldLocation == nil && newLocation != nil {
                 mapView.showsUserLocation = true
-                centerAndZoomMapOnCoordinate(newLocation.coordinate)
+                centerAndZoomMapOnCoordinate(newLocation!.coordinate)
+                getNearbyFriends()
             }
         }
     }
@@ -117,8 +118,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     func getNearbyFriends() {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
             (result, error) in
-            self.nearbyFriends = result as [User]
-            self.refreshControl?.endRefreshing()
+            if error == nil {
+                self.nearbyFriends = result as [User]
+                self.refreshControl?.endRefreshing()
+            } else {
+                let message = error.userInfo!["error"] as String
+                println(message)
+            }
         })
     }
 
@@ -129,16 +135,15 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
             if error == nil {
                 let userData = result as [NSObject: AnyObject]
-                let name = userData["name"] as String
-                let facebookID = userData["id"] as String
-                user.name = name
-                user.fbId = facebookID
+                user.name = userData["name"] as String
+                user.firstName = userData["first_name"] as String
+                user.lastName = userData["last_name"] as String
+                user.fbId = userData["id"] as String
                 user.saveInBackground()
             }
             // TODO: Retry getting user's data at later point if request fails
         })
         locationRelay.startUpdatingLocation()
-        getNearbyFriends()
         refreshNearbyFriendsOnActive = true
     }
 
