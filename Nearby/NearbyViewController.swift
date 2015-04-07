@@ -79,8 +79,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
         } else if keyPath == "nearbyFriends" {
             refreshControl?.endRefreshing()
-            for friend in nearbyFriendsManager.nearbyFriends {
-                mapView.addAnnotation(friend.annotation)
+            if let friends = nearbyFriendsManager.nearbyFriends {
+                for friend in friends {
+                    mapView.addAnnotation(friend.annotation)
+                }
             }
             tableView.reloadData()
         }
@@ -143,7 +145,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 refreshControl.removeFromSuperview()
             }
             return 0;
-        } else if nearbyFriendsManager.nearbyFriends.count == 0 {
+        } else if nearbyFriendsManager.nearbyFriends?.count == 0 {
             showMessageInTable("No friends are nearby.")
             if refreshControl.superview == nil {
                 tableView.addSubview(refreshControl)
@@ -159,13 +161,17 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return nearbyFriendsManager.nearbyFriends.count
+        if let friends = nearbyFriendsManager.nearbyFriends {
+            return friends.count
+        } else {
+            return 0
+        }
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
         var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
-        let friend = nearbyFriendsManager.nearbyFriends[indexPath.row]
+        let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         cell.textLabel!.text = friend.name
         geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
             if error == nil {
@@ -179,7 +185,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - UITableViewDelegate
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let friend = nearbyFriendsManager.nearbyFriends[indexPath.row]
+        let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         mapView.showAnnotations([friend.annotation], animated: true)
         // Delay to make sure all of callout fits on screen after centering
         delay(0.2) {

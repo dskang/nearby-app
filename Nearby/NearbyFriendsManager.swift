@@ -10,14 +10,16 @@ import Foundation
 import Parse
 
 class NearbyFriendsManager: NSObject {
-    dynamic var nearbyFriends: [User] = [] {
+    dynamic var nearbyFriends: [User]? {
         didSet {
-            nearbyFriends.sort({ $0.name < $1.name })
-            for friend in nearbyFriends {
-                let timeAgo = friend.loc.timestamp.shortTimeAgoSinceNow()
-                friend.annotation.title = friend.name
-                friend.annotation.subtitle = "\(timeAgo) ago"
-                friend.annotation.coordinate = friend.loc.coordinate
+            if nearbyFriends != nil {
+                nearbyFriends!.sort({ $0.name < $1.name })
+                for friend in nearbyFriends! {
+                    let timeAgo = friend.loc.timestamp.shortTimeAgoSinceNow()
+                    friend.annotation.title = friend.name
+                    friend.annotation.subtitle = "\(timeAgo) ago"
+                    friend.annotation.coordinate = friend.loc.coordinate
+                }
             }
         }
     }
@@ -35,7 +37,7 @@ class NearbyFriendsManager: NSObject {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
             (result, error) in
             if error == nil {
-                self.nearbyFriends = result as [User]
+                self.nearbyFriends = result as? [User]
             } else {
                 let message = error.userInfo!["error"] as String
                 println(message)
