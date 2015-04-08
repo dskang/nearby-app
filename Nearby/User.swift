@@ -11,13 +11,6 @@ import Parse
 import MapKit
 
 class User: PFUser, PFSubclassing {
-    override class func initialize() {
-        var onceToken: dispatch_once_t = 0;
-        dispatch_once(&onceToken) {
-            self.registerSubclass()
-        }
-    }
-
     @NSManaged var fbId: String
     @NSManaged var name: String
     @NSManaged var firstName: String

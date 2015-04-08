@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         ParseCrashReporting.enable()
 
+        User.registerSubclass()
         Parse.setApplicationId("qezEspdd6WnEHMneZCr9gt9sUFzUQzAjhx03xfuQ", clientKey: "wZj94Bzosernq83Z5267e6k9lVcozPYWwCdNe3xI")
         PFFacebookUtils.initializeFacebook()
 
