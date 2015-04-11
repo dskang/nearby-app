@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         ParseCrashReporting.enable()
 
@@ -24,6 +23,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showLocationDisabledAlert", name: GlobalConstants.NotificationKey.disabledLocation, object: nil)
+
+        if application.applicationState != UIApplicationState.Background {
+            // Track an app open here if we launch with a push, unless
+            // "content_available" was used to trigger a background push (introduced in iOS 7).
+            // In that case, we skip tracking here to avoid double counting the app-open.
+
+            let pushPayload: AnyObject? = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey]
+            if pushPayload == nil {
+                PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
+            }
+        }
+
+        let userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
+        application.registerUserNotificationSettings(settings)
+        application.registerForRemoteNotifications()
 
         return true
     }
@@ -56,13 +71,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-    func application(application: UIApplication,
-                     openURL url: NSURL,
-                     sourceApplication: String?,
-                     annotation: AnyObject?) -> Bool {
-        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
-    }
-
     func showLocationDisabledAlert() {
         let alertController = UIAlertController(
             title: "Background Location Access Disabled",
@@ -81,7 +89,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
     }
+
+    // MARK: Facebook SDK Integration
+
+    func application(application: UIApplication,
+                     openURL url: NSURL,
+                     sourceApplication: String?,
+                     annotation: AnyObject?) -> Bool {
+        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+
+    // MARK: Push Notifications
+
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let installation = PFInstallation.currentInstallation()
+        installation.setDeviceTokenFromData(deviceToken)
+        installation.saveInBackground()
+    }
+
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        if error.code == 3010 {
+            println("Push notifications are not supported in the iOS Simulator.")
+        } else {
+            println("application:didFailToRegisterForRemoteNotificationsWithError: %@", error)
+        }
+    }
+
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject]) {
+        PFPush.handlePush(userInfo)
+        if application.applicationState == UIApplicationState.Inactive {
+            PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
+        }
+    }
 }
+
+// MARK: - Global Constants
 
 struct GlobalConstants {
     struct NotificationKey {
@@ -90,6 +132,8 @@ struct GlobalConstants {
         static let stealthModeOff = "com.dskang.stealthModeOffNotification"
     }
 }
+
+// MARK: - Global Functions
 
 func delay(delay: Double, closure: () -> ()) {
     let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC)))
