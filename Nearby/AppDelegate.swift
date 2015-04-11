@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         User.registerSubclass()
         Parse.setApplicationId("qezEspdd6WnEHMneZCr9gt9sUFzUQzAjhx03xfuQ", clientKey: "wZj94Bzosernq83Z5267e6k9lVcozPYWwCdNe3xI")
-        PFFacebookUtils.initializeFacebook()
+        PFFacebookUtils.initializeFacebookWithApplicationLaunchOptions(launchOptions)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showLocationDisabledAlert", name: GlobalConstants.NotificationKey.disabledLocation, object: nil)
 
@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        FBAppCall.handleDidBecomeActiveWithSession(PFFacebookUtils.session())
+        FBSDKAppEvents.activateApp()
 
         let status = CLLocationManager.authorizationStatus()
         if status == .Denied || status == .Restricted {
@@ -60,8 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      openURL url: NSURL,
                      sourceApplication: String?,
                      annotation: AnyObject?) -> Bool {
-        return FBAppCall.handleOpenURL(url, sourceApplication:sourceApplication,
-            withSession:PFFacebookUtils.session())
+        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 
     func showLocationDisabledAlert() {

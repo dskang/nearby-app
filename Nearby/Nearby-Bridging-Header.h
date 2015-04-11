@@ -11,7 +11,10 @@
 
 #import <Bolts/Bolts.h>
 #import <ParseUI/ParseUI.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+
 #import "NSDate+DateTools.h"
 
 #endif

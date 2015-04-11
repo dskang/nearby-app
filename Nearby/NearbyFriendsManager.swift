@@ -36,11 +36,11 @@ class NearbyFriendsManager: NSObject {
     func update() {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
             (result, error) in
-            if error == nil {
-                self.nearbyFriends = result as? [User]
-            } else {
-                let message = error.userInfo!["error"] as String
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
                 println(message)
+            } else {
+                self.nearbyFriends = result as? [User]
             }
         })
     }

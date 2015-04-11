@@ -14,8 +14,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     dynamic var userLocation: CLLocation? {
         didSet {
-            if let location = userLocation {
-                let user = User.currentUser()
+            if let location = userLocation, user = User.currentUser() {
                 user.location = [
                     "timestamp": location.timestamp.timeIntervalSince1970,
                     "latitude": location.coordinate.latitude,
@@ -60,7 +59,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        let location = locations.last as CLLocation
+        let location = locations.last as! CLLocation
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let locationChanged = userLocation == nil || userLocation!.distanceFromLocation(location) > 5.0
         if recent && locationChanged {

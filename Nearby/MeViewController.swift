@@ -14,17 +14,20 @@ class MeViewController: UITableViewController {
     @IBOutlet weak var stealthModeSwitch: UISwitch!
 
     @IBAction func stealthModeToggled(sender: UISwitch) {
-        let user = User.currentUser()
-        user.hideLocation = sender.on
-        user.saveInBackground()
+        if let user = User.currentUser() {
+            user.hideLocation = sender.on
+            user.saveInBackground()
 
-        let key = sender.on ? GlobalConstants.NotificationKey.stealthModeOn : GlobalConstants.NotificationKey.stealthModeOff
-        NSNotificationCenter.defaultCenter().postNotificationName(key, object: self)
+            let key = sender.on ? GlobalConstants.NotificationKey.stealthModeOn : GlobalConstants.NotificationKey.stealthModeOff
+            NSNotificationCenter.defaultCenter().postNotificationName(key, object: self)
+        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        stealthModeSwitch.on = User.currentUser().hideLocation
+        if let user = User.currentUser() {
+            stealthModeSwitch.on = user.hideLocation
+        }
     }
 
     // MARK: - UITableViewDelegate
@@ -34,7 +37,7 @@ class MeViewController: UITableViewController {
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         if cell == logOutCell {
             User.logOut()
-            let nearbyVC = tabBarController?.viewControllers![0] as NearbyViewController
+            let nearbyVC = tabBarController?.viewControllers![0] as! NearbyViewController
             nearbyVC.locationRelay.stopUpdates()
             nearbyVC.nearbyFriendsManager.stopUpdates()
             tabBarController?.selectedViewController = nearbyVC

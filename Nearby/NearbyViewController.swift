@@ -83,8 +83,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 for friend in friends {
                     mapView.addAnnotation(friend.annotation)
                 }
+                tableView.reloadData()
             }
-            tableView.reloadData()
         }
     }
 
@@ -94,28 +94,32 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         mapView.showsUserLocation = false
         nearbyFriendsManager.stopUpdates()
         mapView.removeAnnotations(mapView.annotations)
+        tableView.reloadData()
     }
 
     func disableStealthMode() {
         locationRelay.startUpdates()
         mapView.showsUserLocation = true
+        tableView.reloadData()
     }
 
     // MARK: - PFLogInViewControllerDelegate
 
-    func logInViewController(logInController: PFLogInViewController!, didLogInUser user: User!) {
+    func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
         dismissViewControllerAnimated(true, completion: nil)
-        FBRequestConnection.startForMeWithCompletionHandler({ connection, result, error in
+        let user = user as! User
+        let request = FBSDKGraphRequest(graphPath: "me", parameters: nil)
+        request.startWithCompletionHandler() { connection, result, error in
             if error == nil {
-                let userData = result as [NSObject: AnyObject]
-                user.name = userData["name"] as String
-                user.firstName = userData["first_name"] as String
-                user.lastName = userData["last_name"] as String
-                user.fbId = userData["id"] as String
+                let userData = result as! [NSObject: AnyObject]
+                user.name = userData["name"] as! String
+                user.firstName = userData["first_name"] as! String
+                user.lastName = userData["last_name"] as! String
+                user.fbId = userData["id"] as! String
                 user.saveInBackground()
             }
             // TODO: Retry getting user's data at later point if request fails
-        })
+        }
         locationRelay.startUpdates()
     }
 
@@ -139,7 +143,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
 
         let user = User.currentUser()
-        if user != nil && user.hideLocation {
+        if user != nil && user!.hideLocation {
             showMessageInTable("Nearby friends are hidden in Stealth Mode.")
             if refreshControl.superview != nil {
                 refreshControl.removeFromSuperview()
@@ -170,12 +174,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
-        var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
+        var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
         let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         cell.textLabel!.text = friend.name
         geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
             if error == nil {
-                let placemark = placemarks[0] as CLPlacemark
+                let placemark = placemarks[0] as! CLPlacemark
                 cell.detailTextLabel!.text = placemark.name
             }
         })
