@@ -120,7 +120,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
             // TODO: Retry getting user's data at later point if request fails
         }
-        locationRelay.startUpdates()
+        if !user.hideLocation {
+            locationRelay.startUpdates()
+        }
     }
 
     // MARK: - UITableViewDataSource
