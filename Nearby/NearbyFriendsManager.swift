@@ -26,15 +26,15 @@ class NearbyFriendsManager: NSObject {
     }
 
     func update() {
-        PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil, block: {
-            (result, error) in
+        PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
                 println(message)
+                // TODO: Send to Parse
             } else {
                 self.nearbyFriends = result as? [User]
             }
-        })
+        }
     }
 
     func startUpdates() {

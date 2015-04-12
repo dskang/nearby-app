@@ -124,6 +124,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         if !user.hideLocation {
             locationRelay.startUpdates()
         }
+
+        // Associate the device with the user
+        let installation = PFInstallation.currentInstallation()
+        installation["user"] = user
+        installation.saveInBackground()
     }
 
     // MARK: - UITableViewDataSource
@@ -180,12 +185,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
         let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         cell.textLabel!.text = friend.name
-        geocoder.reverseGeocodeLocation(friend.loc, completionHandler: { placemarks, error in
+        geocoder.reverseGeocodeLocation(friend.loc) { placemarks, error in
             if error == nil {
                 let placemark = placemarks[0] as! CLPlacemark
                 cell.detailTextLabel!.text = placemark.name
             }
-        })
+        }
         return cell
     }
 
@@ -230,7 +235,24 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
         let annotation = view.annotation as! FriendAnnotation
         let friend = annotation.user
-        println(friend.objectId!)
+        let params = ["recipientId": friend.objectId!]
+        PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+            } else {
+                let alertController = UIAlertController(
+                    title: "Wave sent!",
+                    message: nil,
+                    preferredStyle: .Alert)
+
+                let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                alertController.addAction(okAction)
+
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }
+        }
     }
 }
 
