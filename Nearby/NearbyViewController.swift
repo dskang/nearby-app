@@ -151,22 +151,19 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 user.lastName = userData["last_name"] as! String
                 user.fbId = userData["id"] as! String
                 user.hideLocation = false
-                user.saveInBackgroundWithBlock { succeeded, error in
-                    if error == nil && succeeded {
-                        PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
-                            if let error = error {
-                                let message = error.userInfo!["error"] as! String
-                                println(message)
-                                // TODO: Send to Parse
-                            } else {
-                                self.locationRelay.startUpdates()
-                            }
-                        }
-                    }
-                    // TODO: Send error to Parse
-                }
+                user.saveInBackground()
             }
             // TODO: Retry getting user's data at later point if request fails
+        }
+
+        PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+            } else {
+                self.locationRelay.startUpdates()
+            }
         }
 
         // Associate the device with the user

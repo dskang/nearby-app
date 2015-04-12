@@ -118,7 +118,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject]) {
         PFPush.handlePush(userInfo)
         if application.applicationState == UIApplicationState.Inactive {
-            NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+            if let type = userInfo["type"] as? String {
+                if type == "wave" {
+                    // Display NearbyViewController
+                    if let tabBarVC = self.window?.rootViewController as? UITabBarController {
+                        tabBarVC.selectedIndex = 0
+                    }
+                    NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+                }
+            }
             PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
         }
     }
