@@ -81,6 +81,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
         } else if keyPath == "nearbyFriends" {
             refreshControl?.endRefreshing()
+
+            let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
+            mapView.removeAnnotations(pins)
+
             if let friends = nearbyFriendsManager.nearbyFriends {
                 for friend in friends {
                     friend.annotation = FriendAnnotation(user: friend)
