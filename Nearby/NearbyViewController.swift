@@ -18,7 +18,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     let locationRelay = LocationRelay()
     let nearbyFriendsManager = NearbyFriendsManager()
-    let geocoder = CLGeocoder()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
     var userToFocusOnMap: User?
@@ -156,15 +155,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             // TODO: Retry getting user's data at later point if request fails
         }
 
-        PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
-            if let error = error {
-                let message = error.userInfo!["error"] as! String
-                println(message)
-                // TODO: Send to Parse
-            } else {
-                self.locationRelay.startUpdates()
-            }
-        }
+        locationRelay.startUpdates()
 
         // Associate the device with the user
         let installation = PFInstallation.currentInstallation()
@@ -223,15 +214,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
+        let reusableCell = tableView.dequeueReusableCellWithIdentifier(identifier) as? UITableViewCell
+        let cell = reusableCell ?? UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: identifier)
         let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         cell.textLabel!.text = friend.name
-        geocoder.reverseGeocodeLocation(friend.loc) { placemarks, error in
-            if error == nil {
-                let placemark = placemarks[0] as! CLPlacemark
-                cell.detailTextLabel!.text = placemark.name
-            }
-        }
         return cell
     }
 
