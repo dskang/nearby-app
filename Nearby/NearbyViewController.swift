@@ -11,7 +11,7 @@ import Parse
 import CoreLocation
 import MapKit
 
-class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UITableViewDataSource, UITableViewDelegate {
+class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
@@ -81,11 +81,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             refreshControl?.endRefreshing()
             if let friends = nearbyFriendsManager.nearbyFriends {
                 for friend in friends {
-                    let timeAgo = friend.loc.timestamp.shortTimeAgoSinceNow()
-                    friend.annotation.title = friend.name
-                    friend.annotation.subtitle = "\(timeAgo) ago"
-                    friend.annotation.coordinate = friend.loc.coordinate
-                    mapView.addAnnotation(friend.annotation)
+                    friend.annotation = FriendAnnotation(user: friend)
+                    mapView.addAnnotation(friend.annotation!)
                 }
                 tableView.reloadData()
             }
@@ -196,12 +193,44 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
-        mapView.showAnnotations([friend.annotation], animated: true)
+        mapView.showAnnotations([friend.annotation!], animated: true)
         // Delay to make sure all of callout fits on screen after centering
         delay(0.2) {
-            self.mapView.selectAnnotation(friend.annotation, animated: true)
+            self.mapView.selectAnnotation(friend.annotation!, animated: true)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    }
+
+    // MARK: - MKMapViewDelegate
+
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        if annotation is MKUserLocation {
+            return nil
+        }
+
+        if annotation is FriendAnnotation {
+            var view = mapView.dequeueReusableAnnotationViewWithIdentifier("PinAnnotationView")
+            if view == nil {
+                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinAnnotationView")
+                view.canShowCallout = true
+            } else {
+                view.annotation = annotation
+            }
+
+            let rightButton = UIButton.buttonWithType(UIButtonType.ContactAdd) as! UIButton
+            rightButton.addTarget(nil, action: nil, forControlEvents: UIControlEvents.TouchUpInside)
+            view.rightCalloutAccessoryView = rightButton
+
+            return view
+        }
+
+        return nil
+    }
+
+    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+        let annotation = view.annotation as! FriendAnnotation
+        let friend = annotation.user
+        println(friend.objectId!)
     }
 }
 

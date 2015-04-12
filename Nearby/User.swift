@@ -8,7 +8,6 @@
 
 import Foundation
 import Parse
-import MapKit
 
 class User: PFUser, PFSubclassing {
     @NSManaged var fbId: String
@@ -25,5 +24,5 @@ class User: PFUser, PFSubclassing {
         return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: horizontalAccuracy, verticalAccuracy: 0, timestamp: timestamp)
     }
 
-    let annotation = MKPointAnnotation()
+    var annotation: FriendAnnotation?
 }

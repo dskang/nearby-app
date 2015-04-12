@@ -62,6 +62,9 @@
                             </tableView>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="DrE-Hb-dqG">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="315"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="zgg-mC-O2b"/>
+                                </connections>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
