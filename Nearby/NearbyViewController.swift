@@ -214,8 +214,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
-        let reusableCell = tableView.dequeueReusableCellWithIdentifier(identifier) as? UITableViewCell
-        let cell = reusableCell ?? UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: identifier)
+        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
         let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         cell.textLabel!.text = friend.name
         return cell

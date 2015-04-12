@@ -26,8 +26,7 @@ class FriendsViewController: PFQueryTableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
         let user = object as! User
         let identifier = "FriendCell"
-        let reusableCell = tableView.dequeueReusableCellWithIdentifier(identifier) as? PFTableViewCell
-        let cell = reusableCell ?? PFTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: identifier)
+        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! PFTableViewCell
         cell.textLabel!.text = user.name
         return cell
     }
