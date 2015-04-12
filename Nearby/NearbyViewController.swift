@@ -81,6 +81,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             refreshControl?.endRefreshing()
             if let friends = nearbyFriendsManager.nearbyFriends {
                 for friend in friends {
+                    let timeAgo = friend.loc.timestamp.shortTimeAgoSinceNow()
+                    friend.annotation.title = friend.name
+                    friend.annotation.subtitle = "\(timeAgo) ago"
+                    friend.annotation.coordinate = friend.loc.coordinate
                     mapView.addAnnotation(friend.annotation)
                 }
                 tableView.reloadData()
