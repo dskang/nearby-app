@@ -28,7 +28,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     func startUpdates() {
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.distanceFilter = kCLDistanceFilterNone
 
         // TODO: Check for location services in delegate and create alert if disabled
