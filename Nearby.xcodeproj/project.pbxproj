@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B5606F601AD9F827008AA2F6 /* FriendAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5606F5F1AD9F827008AA2F6 /* FriendAnnotation.swift */; };
+		B5606F641ADACA82008AA2F6 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5606F631ADACA82008AA2F6 /* FriendsViewController.swift */; };
 		B56838981AD0BC6B002D0F34 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56838971AD0BC6B002D0F34 /* User.swift */; };
 		B568389A1AD0EF94002D0F34 /* MeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56838991AD0EF94002D0F34 /* MeViewController.swift */; };
 		B576256D1AD488CB00B8DAF8 /* NearbyFriendsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B576256C1AD488CB00B8DAF8 /* NearbyFriendsManager.swift */; };
@@ -37,6 +38,7 @@
 		514AA05B58346A9EE5B1BB8C /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		584FC7E0B4D1C214DCB0BB78 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B5606F5F1AD9F827008AA2F6 /* FriendAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendAnnotation.swift; sourceTree = "<group>"; };
+		B5606F631ADACA82008AA2F6 /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		B56838971AD0BC6B002D0F34 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		B56838991AD0EF94002D0F34 /* MeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeViewController.swift; sourceTree = "<group>"; };
 		B576256C1AD488CB00B8DAF8 /* NearbyFriendsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyFriendsManager.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			children = (
 				B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */,
 				B56838991AD0EF94002D0F34 /* MeViewController.swift */,
+				B5606F631ADACA82008AA2F6 /* FriendsViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5606F641ADACA82008AA2F6 /* FriendsViewController.swift in Sources */,
 				B576256D1AD488CB00B8DAF8 /* NearbyFriendsManager.swift in Sources */,
 				B5606F601AD9F827008AA2F6 /* FriendAnnotation.swift in Sources */,
 				B5F2A4AD1AAF1ED100FD405C /* NearbyViewController.swift in Sources */,

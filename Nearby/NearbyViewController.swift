@@ -148,16 +148,24 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 user.firstName = userData["first_name"] as! String
                 user.lastName = userData["last_name"] as! String
                 user.fbId = userData["id"] as! String
-                user.saveInBackground()
+                user.hideLocation = false
+                user.saveInBackgroundWithBlock { succeeded, error in
+                    if error == nil && succeeded {
+                        PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
+                            if let error = error {
+                                let message = error.userInfo!["error"] as! String
+                                println(message)
+                                // TODO: Send to Parse
+                            } else {
+                                self.locationRelay.startUpdates()
+                            }
+                        }
+                    }
+                    // TODO: Send error to Parse
+                }
             }
             // TODO: Retry getting user's data at later point if request fails
         }
-        if user.hideLocation {
-            user.hideLocation = false
-            user.saveInBackground()
-        }
-
-        locationRelay.startUpdates()
 
         // Associate the device with the user
         let installation = PFInstallation.currentInstallation()
@@ -216,7 +224,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
-        var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
         let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
         cell.textLabel!.text = friend.name
         geocoder.reverseGeocodeLocation(friend.loc) { placemarks, error in
