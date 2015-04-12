@@ -118,6 +118,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject]) {
         PFPush.handlePush(userInfo)
         if application.applicationState == UIApplicationState.Inactive {
+            NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
             PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
         }
     }
@@ -130,6 +131,7 @@ struct GlobalConstants {
         static let disabledLocation = "com.dskang.disabledLocationNotification"
         static let stealthModeOn = "com.dskang.stealthModeOnNotification"
         static let stealthModeOff = "com.dskang.stealthModeOffNotification"
+        static let openedOnWave = "com.dskang.openedOnWaveNotification"
     }
 }
 

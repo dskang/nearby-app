@@ -31,6 +31,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "focusOnWaveSender:", name: GlobalConstants.NotificationKey.openedOnWave, object: nil)
+
         if let user = User.currentUser() {
             if !user.hideLocation {
                 locationRelay.startUpdates()
@@ -104,6 +106,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         tableView.reloadData()
     }
 
+    func focusOnWaveSender(notification: NSNotification) {
+        let senderId = notification.userInfo!["senderId"] as! String
+        println(senderId)
+    }
+
     // MARK: - PFLogInViewControllerDelegate
 
     func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
@@ -121,9 +128,12 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
             // TODO: Retry getting user's data at later point if request fails
         }
-        if !user.hideLocation {
-            locationRelay.startUpdates()
+        if user.hideLocation {
+            user.hideLocation = false
+            user.saveInBackground()
         }
+
+        locationRelay.startUpdates()
 
         // Associate the device with the user
         let installation = PFInstallation.currentInstallation()
