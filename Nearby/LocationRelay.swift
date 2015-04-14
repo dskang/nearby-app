@@ -30,6 +30,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.pausesLocationUpdatesAutomatically = false
 
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
