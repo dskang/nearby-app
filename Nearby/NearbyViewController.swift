@@ -63,14 +63,20 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         // Dispose of any resources that can be recreated.
     }
 
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        func centerAndZoomMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
-            let degree = (nearbyDistance + 50) / 111000.0
-            let span = MKCoordinateSpan(latitudeDelta: degree, longitudeDelta: degree)
-            let region = MKCoordinateRegion(center: coordinate, span: span)
-            mapView.setRegion(region, animated: true)
-        }
+    func centerAndZoomMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
+        let degree = (nearbyDistance + 50) / 111000.0
+        let span = MKCoordinateSpan(latitudeDelta: degree, longitudeDelta: degree)
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        mapView.setRegion(region, animated: true)
+    }
 
+    @IBAction func centerUserOnMap() {
+        if let location = locationRelay.userLocation {
+            centerAndZoomMapOnCoordinate(location.coordinate)
+        }
+    }
+
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
         if keyPath == "userLocation" {
             let oldLocation = change[NSKeyValueChangeOldKey] as? CLLocation
             let newLocation = change[NSKeyValueChangeNewKey] as? CLLocation

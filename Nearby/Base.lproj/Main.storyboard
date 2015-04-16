@@ -60,11 +60,22 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="zgg-mC-O2b"/>
                                 </connections>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7En-Eb-fa5">
+                                <rect key="frame" x="562" y="277" width="22" height="22"/>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="centerUserOnMap" destination="BYZ-38-t0r" eventType="touchUpInside" id="2lv-l4-h6X"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="bottom" secondItem="7En-Eb-fa5" secondAttribute="bottom" constant="16" id="1IT-xP-Qut"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="4A3-Sk-JOw"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="height" secondItem="MX9-uh-OiU" secondAttribute="height" multiplier="4:3" id="5Vq-Dl-djf"/>
+                            <constraint firstItem="7En-Eb-fa5" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="5lS-Bc-gmR"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="DrE-Hb-dqG" secondAttribute="leading" id="5mJ-tM-aeO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" constant="-16" id="8mm-ve-f4k"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="B49-k5-Q3N"/>
