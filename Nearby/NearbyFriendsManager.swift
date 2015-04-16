@@ -20,27 +20,36 @@ class NearbyFriendsManager: NSObject {
         willSet {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
             if newValue == true {
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: "update", name: "UIApplicationDidBecomeActiveNotification", object: nil)
+                NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
+//                    self.syncFriendsAndUpdate()
+                }
             }
         }
     }
 
-    func update() {
+    func update(completion: (() -> Void)? = nil) {
+        PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+            } else {
+                self.nearbyFriends = result as? [User]
+                if let completion = completion {
+                    completion()
+                }
+            }
+        }
+    }
+
+    func syncFriendsAndUpdate(completion: (() -> Void)? = nil) {
         PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
                 println(message)
                 // TODO: Send to Parse
             } else {
-                PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
-                    if let error = error {
-                        let message = error.userInfo!["error"] as! String
-                        println(message)
-                        // TODO: Send to Parse
-                    } else {
-                        self.nearbyFriends = result as? [User]
-                    }
-                }
+                self.update(completion: completion)
             }
         }
     }

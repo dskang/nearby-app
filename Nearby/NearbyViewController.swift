@@ -20,7 +20,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     let nearbyFriendsManager = NearbyFriendsManager()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
-    var userToFocusOnMap: User?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,28 +116,32 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     }
 
     func focusOnWaveSender(notification: NSNotification) {
-        let senderId = notification.userInfo!["senderId"] as! String
-        var senderIsNearby = false
-        if let friends = nearbyFriendsManager.nearbyFriends {
-            for friend in friends {
-                if friend.objectId == senderId {
-                    mapView.showAnnotations([friend.annotation!], animated: true)
-                    userToFocusOnMap = friend
-                    senderIsNearby = true
-                    break
+        nearbyFriendsManager.update {
+            let senderId = notification.userInfo!["senderId"] as! String
+            var senderIsNearby = false
+            if let friends = self.nearbyFriendsManager.nearbyFriends {
+                for friend in friends {
+                    if friend.objectId == senderId {
+                        self.mapView.showAnnotations([friend.annotation!], animated: true)
+                        delay(0.2) {
+                            self.mapView.selectAnnotation(friend.annotation!, animated: true)
+                        }
+                        senderIsNearby = true
+                        break
+                    }
                 }
             }
-        }
 
-        if !senderIsNearby {
-            let senderName = notification.userInfo!["senderName"] as! String
-            let alertController = UIAlertController(
-                title: "\(senderName) is no longer nearby.",
-                message: nil,
-                preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            if !senderIsNearby {
+                let senderName = notification.userInfo!["senderName"] as! String
+                let alertController = UIAlertController(
+                    title: "\(senderName) is no longer nearby.",
+                    message: nil,
+                    preferredStyle: .Alert)
+                alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
 
-            self.presentViewController(alertController, animated: true, completion: nil)
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }
         }
     }
 
@@ -284,18 +287,4 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
         }
     }
-
-    func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
-        if let target = userToFocusOnMap {
-            for annotation in mapView.annotations {
-                if let annotation = annotation as? FriendAnnotation {
-                    if annotation.user.objectId == target.objectId {
-                        mapView.selectAnnotation(annotation, animated: true)
-                        userToFocusOnMap = nil
-                    }
-                }
-            }
-        }
-    }
 }
-
