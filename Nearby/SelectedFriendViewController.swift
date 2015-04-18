@@ -100,6 +100,16 @@ class SelectedFriendViewController: UIViewController {
     }
 
     func removeBestFriend() {
+        self.bestFriendStatus = nil
+        let params = ["recipientId": friend.objectId!]
+        PFCloud.callFunctionInBackground("removeBestFriend", withParameters: params) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+                self.updateStatus()
+            }
+        }
     }
 
     func cancelBestFriendRequest() {
