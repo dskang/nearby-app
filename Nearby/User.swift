@@ -17,7 +17,6 @@ class User: PFUser, PFSubclassing {
     @NSManaged var location: [String: Double]
     @NSManaged var hideLocation: Bool
     @NSManaged var bestFriends: [User]
-    @NSManaged var requestedBestFriends: [User]
 
     var loc: CLLocation {
         let coordinate = CLLocationCoordinate2D(latitude: location["latitude"]!, longitude: location["longitude"]!)
@@ -32,8 +31,7 @@ class User: PFUser, PFSubclassing {
     }
 
     func requestedBestFriend(user: User) -> Bool {
-        let results = requestedBestFriends.filter { $0 == user }
-        return results.count > 0
+        return false
     }
 
     var annotation: FriendAnnotation?

@@ -119,6 +119,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         PFPush.handlePush(userInfo)
         if application.applicationState == UIApplicationState.Inactive {
             if let type = userInfo["type"] as? String {
+                switch type {
+                case "wave":
+                    // Display NearbyViewController
+                    if let tabBarVC = self.window?.rootViewController as? UITabBarController {
+                        tabBarVC.selectedIndex = 0
+                    }
+                    NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+                case "bestFriendRequest": break
+                default: break
+                }
                 if type == "wave" {
                     // Display NearbyViewController
                     if let tabBarVC = self.window?.rootViewController as? UITabBarController {
