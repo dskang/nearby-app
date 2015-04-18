@@ -16,14 +16,16 @@ class SelectedFriendViewController: UIViewController {
     @IBOutlet weak var blockButton: UIButton!
 
     var friend: User!
-    var bestFriendStatus: String? {
+    var bestFriendRequestStatus: String? {
         didSet {
-            if let status = bestFriendStatus {
+            if let status = bestFriendRequestStatus {
                 switch status {
                 case "accepted":
                     bestFriendButton.setTitle("Remove from Best Friends", forState: UIControlState.Normal)
-                case "pending":
+                case "sent":
                     bestFriendButton.setTitle("Cancel Best Friend Request", forState: UIControlState.Normal)
+                case "received":
+                    bestFriendButton.setTitle("Accept Best Friend Request", forState: UIControlState.Normal)
                 default: break
                 }
             } else {
@@ -39,7 +41,7 @@ class SelectedFriendViewController: UIViewController {
 
     func updateStatus() {
         if let user = User.currentUser() {
-            self.bestFriendStatus = nil
+            self.bestFriendRequestStatus = nil
             user.fetchInBackgroundWithBlock { object, error in
                 if let error = error {
                     let message = error.userInfo!["error"] as! String
@@ -49,22 +51,34 @@ class SelectedFriendViewController: UIViewController {
                     let result = object as! User
                     let results = result.bestFriends.filter { $0.objectId == self.friend.objectId }
                     if results.count > 0 {
-                        self.bestFriendStatus = "accepted"
+                        self.bestFriendRequestStatus = "accepted"
                     }
                 }
             }
 
-            let query = PFQuery(className: "BestFriendRequest")
-            query.whereKey("fromUser", equalTo: user)
-            query.whereKey("toUser", equalTo: friend)
+            let sentRequest = PFQuery(className: "BestFriendRequest")
+            sentRequest.whereKey("fromUser", equalTo: user)
+            sentRequest.whereKey("toUser", equalTo: friend)
+            let receivedRequest = PFQuery(className: "BestFriendRequest")
+            sentRequest.whereKey("fromUser", equalTo: friend)
+            sentRequest.whereKey("toUser", equalTo: user)
+            let query = PFQuery.orQueryWithSubqueries([sentRequest, receivedRequest])
             query.findObjectsInBackgroundWithBlock { objects, error in
                 if let error = error {
                     let message = error.userInfo!["error"] as! String
                     println(message)
                     // TODO: Send to Parse
                 } else {
-                    if objects?.count > 0 {
-                        self.bestFriendStatus = "pending"
+                    if let bestFriendRequests = objects {
+                        if bestFriendRequests.count > 0 {
+                            let request = bestFriendRequests[0] as! PFObject
+                            let userSentRequest = request["fromUser"]?.objectId == user.objectId
+                            if userSentRequest {
+                                self.bestFriendRequestStatus = "sent"
+                            } else {
+                                self.bestFriendRequestStatus = "received"
+                            }
+                        }
                     }
                 }
             }
@@ -72,21 +86,26 @@ class SelectedFriendViewController: UIViewController {
     }
 
     @IBAction func toggleBestFriend() {
-        if let status = bestFriendStatus {
+        if let status = bestFriendRequestStatus {
             switch status {
             case "accepted":
                 removeBestFriend()
-            case "pending":
+                bestFriendRequestStatus = nil
+            case "sent":
                 cancelBestFriendRequest()
+                bestFriendRequestStatus = nil
+            case "received":
+                addBestFriend()
+                bestFriendRequestStatus = "accepted"
             default: break
             }
         } else {
             addBestFriend()
+            bestFriendRequestStatus = "sent"
         }
     }
 
     func addBestFriend() {
-        self.bestFriendStatus = "pending"
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("addBestFriend", withParameters: params) { result, error in
             if let error = error {
@@ -99,7 +118,6 @@ class SelectedFriendViewController: UIViewController {
     }
 
     func removeBestFriend() {
-        self.bestFriendStatus = nil
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("removeBestFriend", withParameters: params) { result, error in
             if let error = error {
@@ -112,7 +130,6 @@ class SelectedFriendViewController: UIViewController {
     }
 
     func cancelBestFriendRequest() {
-        self.bestFriendStatus = nil
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("removeBestFriendRequest", withParameters: params) { result, error in
             if let error = error {
