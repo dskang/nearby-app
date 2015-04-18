@@ -25,14 +25,5 @@ class User: PFUser, PFSubclassing {
         return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: horizontalAccuracy, verticalAccuracy: 0, timestamp: timestamp)
     }
 
-    func isBestFriend(user: User) -> Bool {
-        let results = bestFriends.filter { $0 == user }
-        return results.count > 0
-    }
-
-    func requestedBestFriend(user: User) -> Bool {
-        return false
-    }
-
     var annotation: FriendAnnotation?
 }

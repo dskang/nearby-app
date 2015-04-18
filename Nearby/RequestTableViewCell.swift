@@ -11,10 +11,4 @@ import UIKit
 class RequestTableViewCell: PFTableViewCell {
 
     @IBOutlet weak var nameLabel: UILabel!
-
-    @IBAction func confirmRequest() {
-    }
-
-    @IBAction func deleteRequest() {
-    }
 }

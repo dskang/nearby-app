@@ -14,6 +14,40 @@ class RequestsViewController: PFQueryTableViewController {
         paginationEnabled = false
     }
 
+    @IBAction func confirmRequest(sender: UIButton) {
+        let buttonPosition = sender.convertPoint(CGPointZero, toView: tableView)
+        let indexPath = tableView.indexPathForRowAtPoint(buttonPosition)!
+        let request = objectAtIndexPath(indexPath)
+        let friend = request!["fromUser"] as! User
+        let params = ["recipientId": friend.objectId!]
+        PFCloud.callFunctionInBackground("addBestFriend", withParameters: params) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+            } else {
+                self.loadObjects()
+            }
+        }
+    }
+
+    @IBAction func deleteRequest(sender: UIButton) {
+        let buttonPosition = sender.convertPoint(CGPointZero, toView: tableView)
+        let indexPath = tableView.indexPathForRowAtPoint(buttonPosition)
+        let request = objectAtIndexPath(indexPath)
+        let friend = request!["fromUser"] as! User
+        let params = ["recipientId": friend.objectId!]
+        PFCloud.callFunctionInBackground("removeBestFriendRequest", withParameters: params) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+            } else {
+                self.loadObjects()
+            }
+        }
+    }
+
     // MARK: - PFQueryTableViewController
 
     override func queryForTable() -> PFQuery {

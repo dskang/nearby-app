@@ -16,42 +16,101 @@ class SelectedFriendViewController: UIViewController {
     @IBOutlet weak var blockButton: UIButton!
 
     var friend: User!
-
-    override func viewDidLoad() {
-        nameLabel.text = friend.name
-    }
-
-    func updateUI() {
-        if let user = User.currentUser() {
-            if user.isBestFriend(friend) {
-                bestFriendButton.setTitle("Remove from Best Friends", forState: UIControlState.Normal)
-            } else if user.requestedBestFriend(friend) {
-                bestFriendButton.setTitle("Cancel Best Friend Request", forState: UIControlState.Normal)
+    var bestFriendStatus: String? {
+        didSet {
+            if let status = bestFriendStatus {
+                switch status {
+                case "accepted":
+                    bestFriendButton.setTitle("Remove from Best Friends", forState: UIControlState.Normal)
+                case "pending":
+                    bestFriendButton.setTitle("Cancel Best Friend Request", forState: UIControlState.Normal)
+                default: break
+                }
             } else {
                 bestFriendButton.setTitle("Add to Best Friends", forState: UIControlState.Normal)
             }
         }
     }
 
-    @IBAction func toggleBestFriend() {
+    override func viewDidLoad() {
+        nameLabel.text = friend.name
+        updateStatus()
+    }
+
+    func updateStatus() {
         if let user = User.currentUser() {
-            if user.isBestFriend(friend) {
-                // remove from best friends
-            } else if user.requestedBestFriend(friend) {
-                // cancel best friend request
-            } else {
-                let params = ["recipientId": friend.objectId!]
-                PFCloud.callFunctionInBackground("requestBestFriend", withParameters: params) { result, error in
-                    if let error = error {
-                        let message = error.userInfo!["error"] as! String
-                        println(message)
-                        // TODO: Send to Parse
-                    } else {
-                        user.fetchInBackgroundWithBlock { result, error in
-                            self.updateUI()
-                        }
+            self.bestFriendStatus = nil
+            user.fetchInBackgroundWithBlock { object, error in
+                if let error = error {
+                    let message = error.userInfo!["error"] as! String
+                    println(message)
+                    // TODO: Send to Parse
+                } else {
+                    let result = object as! User
+                    let results = result.bestFriends.filter { $0.objectId == self.friend.objectId }
+                    if results.count > 0 {
+                        self.bestFriendStatus = "accepted"
                     }
                 }
+            }
+
+            let query = PFQuery(className: "BestFriendRequest")
+            query.whereKey("fromUser", equalTo: user)
+            query.whereKey("toUser", equalTo: friend)
+            query.whereKey("status", equalTo: "pending")
+            query.findObjectsInBackgroundWithBlock { objects, error in
+                if let error = error {
+                    let message = error.userInfo!["error"] as! String
+                    println(message)
+                    // TODO: Send to Parse
+                } else {
+                    if objects?.count > 0 {
+                        self.bestFriendStatus = "pending"
+                    }
+                }
+            }
+        }
+    }
+
+    @IBAction func toggleBestFriend() {
+        if let status = bestFriendStatus {
+            switch status {
+            case "accepted":
+                removeBestFriend()
+            case "pending":
+                cancelBestFriendRequest()
+            default: break
+            }
+        } else {
+            addBestFriend()
+        }
+    }
+
+    func addBestFriend() {
+        self.bestFriendStatus = "pending"
+        let params = ["recipientId": friend.objectId!]
+        PFCloud.callFunctionInBackground("addBestFriend", withParameters: params) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+                self.updateStatus()
+            }
+        }
+    }
+
+    func removeBestFriend() {
+    }
+
+    func cancelBestFriendRequest() {
+        self.bestFriendStatus = nil
+        let params = ["recipientId": friend.objectId!]
+        PFCloud.callFunctionInBackground("removeBestFriendRequest", withParameters: params) { result, error in
+            if let error = error {
+                let message = error.userInfo!["error"] as! String
+                println(message)
+                // TODO: Send to Parse
+                self.updateStatus()
             }
         }
     }
