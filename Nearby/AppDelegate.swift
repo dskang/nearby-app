@@ -126,15 +126,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         tabBarVC.selectedIndex = 0
                     }
                     NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
-                case "bestFriendRequest": break
-                default: break
-                }
-                if type == "wave" {
-                    // Display NearbyViewController
+                case "bestFriendRequest":
+                    // Display RequestsViewController
                     if let tabBarVC = self.window?.rootViewController as? UITabBarController {
-                        tabBarVC.selectedIndex = 0
+                        tabBarVC.selectedIndex = 1
+                        if let navVC = tabBarVC.viewControllers?[1] as? UINavigationController {
+                            if let friendsVC = navVC.topViewController as? FriendsViewController {
+                                friendsVC.performSegueWithIdentifier("ShowRequests", sender: nil)
+                            }
+                        }
                     }
-                    NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+                default: break
                 }
             }
             PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)

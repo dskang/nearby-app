@@ -188,7 +188,7 @@
                     <navigationItem key="navigationItem" title="Friends" id="lSy-nh-xlg">
                         <barButtonItem key="rightBarButtonItem" title="Requests" id="9oz-TS-o6k">
                             <connections>
-                                <segue destination="Ef2-sb-cC9" kind="show" id="w3V-SG-l7c"/>
+                                <segue destination="Ef2-sb-cC9" kind="show" identifier="ShowRequests" id="w3V-SG-l7c"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
