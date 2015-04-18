@@ -55,7 +55,6 @@ class RequestsViewController: PFQueryTableViewController {
         let user = User.currentUser()!
         let query = PFQuery(className: "BestFriendRequest")
         query.whereKey("toUser", equalTo: user)
-        query.whereKey("status", equalTo: "pending")
         query.includeKey("fromUser")
         return query
     }

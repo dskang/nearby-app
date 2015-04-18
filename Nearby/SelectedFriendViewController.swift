@@ -57,7 +57,6 @@ class SelectedFriendViewController: UIViewController {
             let query = PFQuery(className: "BestFriendRequest")
             query.whereKey("fromUser", equalTo: user)
             query.whereKey("toUser", equalTo: friend)
-            query.whereKey("status", equalTo: "pending")
             query.findObjectsInBackgroundWithBlock { objects, error in
                 if let error = error {
                     let message = error.userInfo!["error"] as! String
