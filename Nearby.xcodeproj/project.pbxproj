@@ -14,6 +14,7 @@
 		B576256D1AD488CB00B8DAF8 /* NearbyFriendsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B576256C1AD488CB00B8DAF8 /* NearbyFriendsManager.swift */; };
 		B5A400631AC1CEF000E6913D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5A400621AC1CEF000E6913D /* CoreLocation.framework */; };
 		B5A4B4131AD1849A0098F24D /* LocationRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A4B4121AD1849A0098F24D /* LocationRelay.swift */; };
+		B5A762521AE1E8670080B792 /* SelectedFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A762511AE1E8670080B792 /* SelectedFriendViewController.swift */; };
 		B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */; };
 		B5F2A4AD1AAF1ED100FD405C /* NearbyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */; };
 		B5F2A4B01AAF1ED100FD405C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5F2A4AE1AAF1ED100FD405C /* Main.storyboard */; };
@@ -44,6 +45,7 @@
 		B576256C1AD488CB00B8DAF8 /* NearbyFriendsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyFriendsManager.swift; sourceTree = "<group>"; };
 		B5A400621AC1CEF000E6913D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B5A4B4121AD1849A0098F24D /* LocationRelay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationRelay.swift; sourceTree = "<group>"; };
+		B5A762511AE1E8670080B792 /* SelectedFriendViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectedFriendViewController.swift; sourceTree = "<group>"; };
 		B5F2A4A51AAF1ED100FD405C /* Nearby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nearby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F2A4A91AAF1ED100FD405C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5F2A4AA1AAF1ED100FD405C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				B5F2A4AC1AAF1ED100FD405C /* NearbyViewController.swift */,
 				B56838991AD0EF94002D0F34 /* MeViewController.swift */,
 				B5606F631ADACA82008AA2F6 /* FriendsViewController.swift */,
+				B5A762511AE1E8670080B792 /* SelectedFriendViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				B5F2A4AB1AAF1ED100FD405C /* AppDelegate.swift in Sources */,
 				B568389A1AD0EF94002D0F34 /* MeViewController.swift in Sources */,
 				B56838981AD0BC6B002D0F34 /* User.swift in Sources */,
+				B5A762521AE1E8670080B792 /* SelectedFriendViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

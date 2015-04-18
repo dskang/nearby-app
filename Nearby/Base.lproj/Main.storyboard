@@ -176,7 +176,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="san-pI-RfJ" kind="show" id="HOV-dP-WsA"/>
+                                    <segue destination="mX8-gy-MnA" kind="show" identifier="ShowFriend" id="aiR-xB-U54"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -191,47 +191,67 @@
             </objects>
             <point key="canvasLocation" x="2332" y="405"/>
         </scene>
-        <!--Table View Controller-->
-        <scene sceneID="tMi-Ki-vOU">
+        <!--Selected Friend View Controller-->
+        <scene sceneID="gBc-cE-FrJ">
             <objects>
-                <tableViewController id="san-pI-RfJ" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Fu9-x9-aFd">
+                <viewController id="mX8-gy-MnA" customClass="SelectedFriendViewController" customModule="Nearby" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="AeQ-Zj-LU0"/>
+                        <viewControllerLayoutGuide type="bottom" id="OwY-m1-lO8"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8Mg-O2-ZE7">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J4A-gC-ueW">
+                                <rect key="frame" x="16" y="80" width="46" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0qa-40-9tU">
+                                <rect key="frame" x="16" y="133" width="137" height="30"/>
+                                <state key="normal" title="Add to Best Friends"/>
+                                <connections>
+                                    <action selector="toggleBestFriend" destination="mX8-gy-MnA" eventType="touchUpInside" id="EwZ-YM-FD0"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rnn-W2-mgM">
+                                <rect key="frame" x="16" y="171" width="39" height="30"/>
+                                <state key="normal" title="Block">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <sections>
-                            <tableViewSection id="n9d-kV-2Av">
-                                <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="dmx-e8-gX3">
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dmx-e8-gX3" id="Qxl-JW-PVI">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="q5d-Qf-v98">
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="q5d-Qf-v98" id="Okd-Lp-OAF">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="vS5-wa-nSE">
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vS5-wa-nSE" id="AWk-gI-vQj">
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
-                        </sections>
-                        <connections>
-                            <outlet property="dataSource" destination="san-pI-RfJ" id="rTL-7X-JX2"/>
-                            <outlet property="delegate" destination="san-pI-RfJ" id="eDt-K2-F2z"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mRF-R1-64R" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <constraints>
+                            <constraint firstItem="0qa-40-9tU" firstAttribute="top" secondItem="J4A-gC-ueW" secondAttribute="bottom" constant="32" id="7Gb-Ua-3vp"/>
+                            <constraint firstItem="J4A-gC-ueW" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leading" constant="16" id="8oT-7X-s4I"/>
+                            <constraint firstItem="rnn-W2-mgM" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="9V4-KD-SgE"/>
+                            <constraint firstItem="rnn-W2-mgM" firstAttribute="top" secondItem="0qa-40-9tU" secondAttribute="bottom" constant="8" symbolic="YES" id="Qb9-mW-K4a"/>
+                            <constraint firstItem="J4A-gC-ueW" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="RAy-OH-cWK"/>
+                            <constraint firstItem="J4A-gC-ueW" firstAttribute="top" secondItem="AeQ-Zj-LU0" secondAttribute="bottom" constant="16" id="bpE-3i-4OW"/>
+                            <constraint firstItem="J4A-gC-ueW" firstAttribute="top" secondItem="AeQ-Zj-LU0" secondAttribute="bottom" constant="18" id="db9-5u-Xjg"/>
+                            <constraint firstItem="0qa-40-9tU" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="kiM-pu-NbA"/>
+                            <constraint firstItem="J4A-gC-ueW" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="lmb-ar-Vdd"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="8oT-7X-s4I"/>
+                                <exclude reference="RAy-OH-cWK"/>
+                                <exclude reference="db9-5u-Xjg"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="bestFriendButton" destination="0qa-40-9tU" id="lta-B5-JBl"/>
+                        <outlet property="blockButton" destination="rnn-W2-mgM" id="ggf-bY-4P3"/>
+                        <outlet property="nameLabel" destination="J4A-gC-ueW" id="BSg-Zm-qp6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FnZ-cw-GSa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3077" y="405"/>
+            <point key="canvasLocation" x="3027" y="405"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="kc4-7q-CUO">
