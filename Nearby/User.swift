@@ -27,4 +27,14 @@ class User: PFUser, PFSubclassing {
     }
 
     var annotation: FriendAnnotation?
+
+    func hasBlocked(user: User) -> Bool {
+        let results = self.blockedUsers.filter { $0.objectId == user.objectId }
+        return results.count > 0
+    }
+
+    func hasBestFriend(user: User) -> Bool {
+        let results = self.bestFriends.filter { $0.objectId == user.objectId }
+        return results.count > 0
+    }
 }

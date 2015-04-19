@@ -54,12 +54,7 @@ class SelectedFriendViewController: UIViewController {
 
     func updateBlocked() {
         if let user = User.currentUser() {
-            let results = user.blockedUsers.filter { $0.objectId == self.friend.objectId }
-            if results.count > 0 {
-                self.friendBlocked = true
-            } else {
-                self.friendBlocked = false
-            }
+            self.friendBlocked = user.hasBlocked(friend)
         }
     }
 
@@ -72,9 +67,7 @@ class SelectedFriendViewController: UIViewController {
                     println(message)
                     // TODO: Send to Parse
                 } else {
-                    let result = object as! User
-                    let results = result.bestFriends.filter { $0.objectId == self.friend.objectId }
-                    if results.count > 0 {
+                    if user.hasBestFriend(self.friend) {
                         self.bestFriendRequestStatus = "accepted"
                     }
                 }
