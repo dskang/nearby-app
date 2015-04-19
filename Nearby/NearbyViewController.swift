@@ -322,13 +322,20 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 let message = error.userInfo!["error"] as! String
                 println(message)
                 // TODO: Send to Parse
+                let alertController = UIAlertController(
+                    title: message,
+                    message: nil,
+                    preferredStyle: .Alert)
+                alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
+
+                self.nearbyFriendsManager.update()
             } else {
                 let alertController = UIAlertController(
                     title: "Wave sent!",
                     message: nil,
                     preferredStyle: .Alert)
                 alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-
                 self.presentViewController(alertController, animated: true, completion: nil)
             }
         }
