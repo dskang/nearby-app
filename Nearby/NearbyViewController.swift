@@ -87,6 +87,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         } else if keyPath == "nearbyFriends" {
             refreshControl?.endRefreshing()
 
+            // Prevent adding pins when user toggles Stealth Mode very quickly
+            if let user = User.currentUser() {
+                if user.hideLocation {
+                    return
+                }
+            }
+
             let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
             mapView.removeAnnotations(pins)
 
