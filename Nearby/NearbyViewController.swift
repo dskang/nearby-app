@@ -93,8 +93,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if let nearbyFriends = nearbyFriendsManager.nearbyFriends, bestFriends = nearbyFriendsManager.bestFriends {
                 let friends = nearbyFriends + bestFriends
                 for friend in friends {
-                    friend.annotation = FriendAnnotation(user: friend)
-                    mapView.addAnnotation(friend.annotation!)
+                    if !friend.hideLocation {
+                        friend.annotation = FriendAnnotation(user: friend)
+                        mapView.addAnnotation(friend.annotation!)
+                    }
                 }
                 tableView.reloadData()
             }
@@ -239,7 +241,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
 
         if section == 0 {
-            return "Nearby Friends"
+            if nearbyFriendsManager.nearbyFriends?.count == 0 {
+                return "No Nearby Friends"
+            } else {
+                return "Nearby Friends"
+            }
         } else {
             return "Best Friends"
         }
@@ -258,10 +264,20 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let friend = listForSection(indexPath.section)[indexPath.row]
-        mapView.showAnnotations([friend.annotation!], animated: true)
-        // Delay to make sure all of callout fits on screen after centering
-        delay(0.2) {
-            self.mapView.selectAnnotation(friend.annotation!, animated: true)
+        if friend.hideLocation {
+            let alertController = UIAlertController(
+                title: "\(friend.firstName) is currently hidden.",
+                message: nil,
+                preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+
+            self.presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            mapView.showAnnotations([friend.annotation!], animated: true)
+            // Delay to make sure all of callout fits on screen after centering
+            delay(0.2) {
+                self.mapView.selectAnnotation(friend.annotation!, animated: true)
+            }
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
@@ -269,17 +285,22 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - MKMapViewDelegate
 
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-        if annotation is MKUserLocation {
+        if let annotation = annotation as? MKUserLocation {
             return nil
-        }
-
-        if annotation is FriendAnnotation {
-            var view = mapView.dequeueReusableAnnotationViewWithIdentifier("PinAnnotationView")
+        } else if let annotation = annotation as? FriendAnnotation {
+            let identifier = "PinAnnotationView"
+            var view: MKPinAnnotationView! = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as? MKPinAnnotationView
             if view == nil {
-                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "PinAnnotationView")
+                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 view.canShowCallout = true
             } else {
                 view.annotation = annotation
+            }
+
+            if let user = User.currentUser() {
+                if user.hasBestFriend(annotation.user) {
+                    view.pinColor = MKPinAnnotationColor.Purple
+                }
             }
 
             let rightButton = UIButton.buttonWithType(UIButtonType.ContactAdd) as! UIButton
@@ -287,9 +308,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             view.rightCalloutAccessoryView = rightButton
 
             return view
+        } else {
+            return nil
         }
-
-        return nil
     }
 
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
