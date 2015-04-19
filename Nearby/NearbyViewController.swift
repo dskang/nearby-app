@@ -36,6 +36,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if !user.hideLocation {
                 locationRelay.startUpdates()
             }
+            user.fetchInBackground()
         }
 
         refreshControl = UIRefreshControl()

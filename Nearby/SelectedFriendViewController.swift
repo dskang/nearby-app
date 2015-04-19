@@ -130,6 +130,11 @@ class SelectedFriendViewController: UIViewController {
                 println(message)
                 // TODO: Send to Parse
                 self.updateStatus()
+            } else {
+                // Update best friends
+                if let user = User.currentUser() {
+                    user.fetchInBackground()
+                }
             }
         }
     }
@@ -142,6 +147,11 @@ class SelectedFriendViewController: UIViewController {
                 println(message)
                 // TODO: Send to Parse
                 self.updateStatus()
+            } else {
+                // Update best friends
+                if let user = User.currentUser() {
+                    user.fetchInBackground()
+                }
             }
         }
     }
