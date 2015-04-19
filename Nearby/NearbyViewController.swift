@@ -90,7 +90,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
             mapView.removeAnnotations(pins)
 
-            if let friends = nearbyFriendsManager.nearbyFriends {
+            if let nearbyFriends = nearbyFriendsManager.nearbyFriends, bestFriends = nearbyFriendsManager.bestFriends {
+                let friends = nearbyFriends + bestFriends
                 for friend in friends {
                     friend.annotation = FriendAnnotation(user: friend)
                     mapView.addAnnotation(friend.annotation!)
@@ -197,34 +198,58 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if refreshControl.superview != nil {
                 refreshControl.removeFromSuperview()
             }
-            return 0;
-        } else if nearbyFriendsManager.nearbyFriends?.count == 0 {
+            return 0
+        } else if nearbyFriendsManager.nearbyFriends?.count == 0 && nearbyFriendsManager.bestFriends?.count == 0 {
             showMessageInTable("No friends are nearby.")
             if refreshControl.superview == nil {
                 tableView.addSubview(refreshControl)
             }
-            return 0;
+            return 0
         } else {
             hideMessageInTable()
             if refreshControl.superview == nil {
                 tableView.addSubview(refreshControl)
             }
-            return 1;
+            if nearbyFriendsManager.bestFriends?.count > 0 {
+                return 2
+            } else {
+                return 1
+            }
+        }
+    }
+
+    func listForSection(section: Int) -> [User] {
+        if section == 0 {
+            return nearbyFriendsManager.nearbyFriends!
+        } else {
+            return nearbyFriendsManager.bestFriends!
         }
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let friends = nearbyFriendsManager.nearbyFriends {
-            return friends.count
-        } else {
+        if nearbyFriendsManager.nearbyFriends == nil {
             return 0
+        }
+        return listForSection(section).count
+    }
+
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if nearbyFriendsManager.nearbyFriends == nil {
+            return nil
+        }
+
+        if section == 0 {
+            return "Nearby Friends"
+        } else {
+            return "Best Friends"
         }
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
         let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
-        let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
+
+        let friend = listForSection(indexPath.section)[indexPath.row]
         cell.textLabel?.text = friend.name
         return cell
     }
@@ -232,7 +257,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - UITableViewDelegate
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let friend = nearbyFriendsManager.nearbyFriends![indexPath.row]
+        let friend = listForSection(indexPath.section)[indexPath.row]
         mapView.showAnnotations([friend.annotation!], animated: true)
         // Delay to make sure all of callout fits on screen after centering
         delay(0.2) {

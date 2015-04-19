@@ -21,6 +21,8 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
+    var bestFriends: [User]?
+
     var updateOnActive: Bool = false {
         willSet {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
@@ -68,9 +70,12 @@ class NearbyFriendsManager: NSObject {
                 println(message)
                 // TODO: Send to Parse
             } else {
-                self.nearbyFriends = result as? [User]
-                if let completion = completion {
-                    completion()
+                if let result = result as? [String: [User]] {
+                    self.bestFriends = result["bestFriends"]
+                    self.nearbyFriends = result["nearbyFriends"]
+                    if let completion = completion {
+                        completion()
+                    }
                 }
             }
         }
