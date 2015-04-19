@@ -27,6 +27,10 @@ class RequestsViewController: PFQueryTableViewController {
                 // TODO: Send to Parse
             } else {
                 self.loadObjects()
+                if let user = User.currentUser() {
+                    // Update bestFriends array
+                    user.fetchInBackground()
+                }
             }
         }
     }
@@ -56,6 +60,9 @@ class RequestsViewController: PFQueryTableViewController {
         let query = PFQuery(className: "BestFriendRequest")
         query.whereKey("toUser", equalTo: user)
         query.includeKey("fromUser")
+        if user.blockedUsers.count > 0 {
+            query.whereKey("fromUser", notContainedIn: user.blockedUsers)
+        }
         return query
     }
 

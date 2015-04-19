@@ -54,20 +54,11 @@ class SelectedFriendViewController: UIViewController {
 
     func updateBlocked() {
         if let user = User.currentUser() {
-            user.fetchInBackgroundWithBlock { object, error in
-                if let error = error {
-                    let message = error.userInfo!["error"] as! String
-                    println(message)
-                    // TODO: Send to Parse
-                } else {
-                    let result = object as! User
-                    let results = result.blockedUsers.filter { $0.objectId == self.friend.objectId }
-                    if results.count > 0 {
-                        self.friendBlocked = true
-                    } else {
-                        self.friendBlocked = false
-                    }
-                }
+            let results = user.blockedUsers.filter { $0.objectId == self.friend.objectId }
+            if results.count > 0 {
+                self.friendBlocked = true
+            } else {
+                self.friendBlocked = false
             }
         }
     }
@@ -186,14 +177,14 @@ class SelectedFriendViewController: UIViewController {
 
     func blockFriend() {
         if let user = User.currentUser() {
-            user.addUniqueObject(friend, forKey: "blocked")
+            user.addUniqueObject(friend, forKey: "blockedUsers")
             user.saveInBackground()
         }
     }
 
     func unblockFriend() {
         if let user = User.currentUser() {
-            user.removeObject(friend, forKey: "blocked")
+            user.removeObject(friend, forKey: "blockedUsers")
             user.saveInBackground()
         }
     }
