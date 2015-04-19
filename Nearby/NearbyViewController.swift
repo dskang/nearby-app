@@ -36,7 +36,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if !user.hideLocation {
                 locationRelay.startUpdates()
             }
-            user.fetchInBackground()
         }
 
         refreshControl = UIRefreshControl()
@@ -45,6 +44,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+
+        if let user = User.currentUser() {
+            if !user.hideLocation {
+                // FIXME: Replace with a remote notification when best friend changes
+                user.fetchInBackground()
+            }
+        }
 
         if User.currentUser() == nil {
             let logInController = PFLogInViewController()
@@ -308,6 +314,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if let user = User.currentUser() {
                 if user.hasBestFriend(annotation.user) {
                     view.pinColor = MKPinAnnotationColor.Purple
+                } else {
+                    view.pinColor = MKPinAnnotationColor.Red
                 }
             }
 
