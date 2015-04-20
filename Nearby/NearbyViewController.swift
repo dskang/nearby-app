@@ -135,21 +135,25 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     func focusOnWaveSender(notification: NSNotification) {
         nearbyFriendsManager.update {
             let senderId = notification.userInfo!["senderId"] as! String
-            var senderIsNearby = false
-            if let friends = self.nearbyFriendsManager.nearbyFriends {
-                for friend in friends {
-                    if friend.objectId == senderId {
-                        self.mapView.showAnnotations([friend.annotation!], animated: true)
-                        delay(0.2) {
-                            self.mapView.selectAnnotation(friend.annotation!, animated: true)
+            var senderFound = false
+
+            let friendLists = [self.nearbyFriendsManager.bestFriends, self.nearbyFriendsManager.nearbyFriends]
+            for list in friendLists {
+                if let friends = list {
+                    for friend in friends {
+                        if friend.objectId == senderId {
+                            self.mapView.showAnnotations([friend.annotation!], animated: true)
+                            delay(0.2) {
+                                self.mapView.selectAnnotation(friend.annotation!, animated: true)
+                            }
+                            senderFound = true
+                            break
                         }
-                        senderIsNearby = true
-                        break
                     }
                 }
             }
 
-            if !senderIsNearby {
+            if !senderFound {
                 let senderName = notification.userInfo!["senderName"] as! String
                 let alertController = UIAlertController(
                     title: "\(senderName) is no longer nearby.",
