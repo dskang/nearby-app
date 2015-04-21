@@ -60,6 +60,11 @@ class MeViewController: UITableViewController {
         } else if cell == testUserCell {
             PFUser.logInWithUsernameInBackground("fzbOL1KqIvbZE2lG2UMdo56ER", password: "test") { user, error in
                 if let user = user as? User {
+                    // Associate the device with the user
+                    let installation = PFInstallation.currentInstallation()
+                    installation["user"] = user
+                    installation.saveInBackground()
+
                     let nearbyVC = self.tabBarController?.viewControllers![0] as! NearbyViewController
                     nearbyVC.nearbyFriendsManager.update {
                         self.tabBarController?.selectedViewController = nearbyVC
