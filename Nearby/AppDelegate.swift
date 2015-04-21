@@ -35,19 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        // FIXME: Refactor to use didReceiveRemoteHandler
-        if let userInfo = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject: AnyObject] {
-            if let type = userInfo["type"] as? String {
-                switch type {
-                case "wave":
-                    handleWave(userInfo)
-                case "bestFriendRequest":
-                    handleBestFriendRequest(userInfo)
-                default: break
-                }
-            }
-        }
-
         // Ask user to accept push notifications
         let userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
         let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
@@ -129,7 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject]) {
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         PFPush.handlePush(userInfo)
         if application.applicationState == UIApplicationState.Inactive {
             if let type = userInfo["type"] as? String {
@@ -143,6 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
         }
+        completionHandler(UIBackgroundFetchResult.NoData)
     }
 
     func handleWave(userInfo: [NSObject: AnyObject]) {
