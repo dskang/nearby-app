@@ -59,16 +59,16 @@ class NearbyFriendsManager: NSObject {
 
     var updatePeriodically: Bool = false {
         willSet {
+            updateTimer?.invalidate()
             if newValue == true {
                 updateTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "update:", userInfo: nil, repeats: true)
                 NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
+                    self.updateTimer?.invalidate()
                     self.updateTimer = NSTimer.scheduledTimerWithTimeInterval(self.updateInterval, target: self, selector: "update:", userInfo: nil, repeats: true)
                 }
                 NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationWillResignActiveNotification", object: nil, queue: nil) { notification in
                     self.updateTimer?.invalidate()
                 }
-            } else {
-                updateTimer?.invalidate()
             }
         }
     }
