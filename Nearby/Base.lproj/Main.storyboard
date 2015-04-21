@@ -478,6 +478,42 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection id="LVg-AI-jqN">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="44" id="AeG-7q-wTh">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AeG-7q-wTh" id="B49-eL-LKs">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Switch to Test User" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sMQ-3Z-P4B">
+                                                    <rect key="frame" x="8" y="11" width="149" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="sMQ-3Z-P4B" secondAttribute="bottom" id="41Q-rj-45d"/>
+                                                <constraint firstItem="sMQ-3Z-P4B" firstAttribute="leading" secondItem="B49-eL-LKs" secondAttribute="leadingMargin" constant="5" id="J8L-Dd-Pfc"/>
+                                                <constraint firstItem="sMQ-3Z-P4B" firstAttribute="top" secondItem="B49-eL-LKs" secondAttribute="topMargin" id="Yv5-7k-cD4"/>
+                                                <constraint firstItem="sMQ-3Z-P4B" firstAttribute="leading" secondItem="B49-eL-LKs" secondAttribute="leadingMargin" id="ZOX-Q8-X2F"/>
+                                                <constraint firstAttribute="centerY" secondItem="sMQ-3Z-P4B" secondAttribute="centerY" id="eJq-Jl-uFC"/>
+                                                <constraint firstAttribute="centerY" secondItem="sMQ-3Z-P4B" secondAttribute="centerY" id="xSM-yt-KVf"/>
+                                                <constraint firstItem="sMQ-3Z-P4B" firstAttribute="leading" secondItem="B49-eL-LKs" secondAttribute="leadingMargin" id="zhx-AJ-q9I"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="zhx-AJ-q9I"/>
+                                                    <exclude reference="eJq-Jl-uFC"/>
+                                                    <exclude reference="J8L-Dd-Pfc"/>
+                                                    <exclude reference="41Q-rj-45d"/>
+                                                    <exclude reference="Yv5-7k-cD4"/>
+                                                </mask>
+                                            </variation>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="bCn-Ir-Now" id="riu-IY-1et"/>
@@ -488,6 +524,7 @@
                     <connections>
                         <outlet property="logOutCell" destination="Qu7-TS-6Mj" id="5Tk-kL-Ir5"/>
                         <outlet property="stealthModeSwitch" destination="BzQ-Re-BXb" id="b9V-XB-D96"/>
+                        <outlet property="testUserCell" destination="AeG-7q-wTh" id="OLR-0u-gP3"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IVh-wb-b9I" userLabel="First Responder" sceneMemberID="firstResponder"/>

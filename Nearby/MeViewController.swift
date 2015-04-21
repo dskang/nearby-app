@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import Parse
 
 class MeViewController: UITableViewController {
 
     @IBOutlet weak var logOutCell: UITableViewCell!
     @IBOutlet weak var stealthModeSwitch: UISwitch!
+    @IBOutlet weak var testUserCell: UITableViewCell!
 
     @IBAction func stealthModeToggled(sender: UISwitch) {
         if let user = User.currentUser() {
@@ -30,6 +32,20 @@ class MeViewController: UITableViewController {
         }
     }
 
+    override func viewDidAppear(animated: Bool) {
+        // To make "Switch to Test User" appear and disappear
+        tableView.reloadData()
+    }
+
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if let user = User.currentUser() {
+            if user.name == "Dan Kang" {
+                return super.numberOfSectionsInTableView(tableView)
+            }
+        }
+        return super.numberOfSectionsInTableView(tableView) - 1
+    }
+
     // MARK: - UITableViewDelegate
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -41,6 +57,15 @@ class MeViewController: UITableViewController {
             nearbyVC.locationRelay.stopUpdates()
             nearbyVC.nearbyFriendsManager.stopUpdates()
             tabBarController?.selectedViewController = nearbyVC
+        } else if cell == testUserCell {
+            PFUser.logInWithUsernameInBackground("fzbOL1KqIvbZE2lG2UMdo56ER", password: "test") { user, error in
+                if let user = user as? User {
+                    let nearbyVC = self.tabBarController?.viewControllers![0] as! NearbyViewController
+                    nearbyVC.nearbyFriendsManager.update {
+                        self.tabBarController?.selectedViewController = nearbyVC
+                    }
+                }
+            }
         }
     }
 }
