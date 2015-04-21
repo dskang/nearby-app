@@ -185,12 +185,14 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             // TODO: Retry getting user's data at later point if request fails
         }
 
-        locationRelay.startUpdates()
-
         // Associate the device with the user
         let installation = PFInstallation.currentInstallation()
         installation["user"] = user
         installation.saveInBackground()
+
+        nearbyFriendsManager.syncFriends {
+            self.locationRelay.startUpdates()
+        }
     }
 
     // MARK: - UITableViewDataSource

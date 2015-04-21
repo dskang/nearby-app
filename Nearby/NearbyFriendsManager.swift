@@ -31,10 +31,14 @@ class NearbyFriendsManager: NSObject {
                     if let lastUpdated = self.lastUpdated {
                         let secondsPassed = abs(lastUpdated.timeIntervalSinceNow)
                         if secondsPassed >= self.updateInterval {
-                            self.syncFriendsAndUpdate()
+                            self.syncFriends {
+                                self.update()
+                            }
                         }
                     } else {
-                        self.syncFriendsAndUpdate()
+                        self.syncFriends {
+                            self.update()
+                        }
                     }
                 }
             }
@@ -81,14 +85,16 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
-    func syncFriendsAndUpdate(completion: (() -> Void)? = nil) {
+    func syncFriends(completion: (() -> Void)? = nil) {
         PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
                 println(message)
                 // TODO: Send to Parse
             } else {
-                self.update(completion: completion)
+                if let completion = completion {
+                    completion()
+                }
             }
         }
     }
