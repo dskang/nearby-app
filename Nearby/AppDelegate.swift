@@ -35,6 +35,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        // FIXME: Refactor to use didReceiveRemoteHandler
+        if let userInfo = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject: AnyObject] {
+            if let type = userInfo["type"] as? String {
+                switch type {
+                case "wave":
+                    handleWave(userInfo)
+                case "bestFriendRequest":
+                    handleBestFriendRequest(userInfo)
+                default: break
+                }
+            }
+        }
+
+        // Ask user to accept push notifications
         let userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
         let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
         application.registerUserNotificationSettings(settings)
@@ -121,25 +135,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let type = userInfo["type"] as? String {
                 switch type {
                 case "wave":
-                    // Display NearbyViewController
-                    if let tabBarVC = self.window?.rootViewController as? UITabBarController {
-                        tabBarVC.selectedIndex = 0
-                    }
-                    NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+                    handleWave(userInfo)
                 case "bestFriendRequest":
-                    // Display RequestsViewController
-                    if let tabBarVC = self.window?.rootViewController as? UITabBarController {
-                        tabBarVC.selectedIndex = 1
-                        if let navVC = tabBarVC.viewControllers?[1] as? UINavigationController {
-                            if let friendsVC = navVC.topViewController as? FriendsViewController {
-                                friendsVC.performSegueWithIdentifier("ShowRequests", sender: nil)
-                            }
-                        }
-                    }
+                    handleBestFriendRequest(userInfo)
                 default: break
                 }
             }
             PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
+        }
+    }
+
+    func handleWave(userInfo: [NSObject: AnyObject]) {
+        // Display NearbyViewController
+        if let tabBarVC = self.window?.rootViewController as? UITabBarController {
+            tabBarVC.selectedIndex = 0
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+    }
+
+    func handleBestFriendRequest(userInfo: [NSObject: AnyObject]) {
+        // Display RequestsViewController
+        if let tabBarVC = self.window?.rootViewController as? UITabBarController {
+            tabBarVC.selectedIndex = 1
+            if let navVC = tabBarVC.viewControllers?[1] as? UINavigationController {
+                if let friendsVC = navVC.topViewController as? FriendsViewController {
+                    friendsVC.performSegueWithIdentifier("ShowRequests", sender: nil)
+                }
+            }
         }
     }
 }
