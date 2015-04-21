@@ -101,12 +101,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 }
             }
 
+            // Remove annotations
             let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
             mapView.removeAnnotations(pins)
 
-            if let nearbyFriends = nearbyFriendsManager.nearbyFriends, bestFriends = nearbyFriendsManager.bestFriends {
-                let friends = nearbyFriends + bestFriends
-                for friend in friends {
+            // Add annotations
+            if let visibleFriends = nearbyFriendsManager.visibleFriends {
+                for friend in visibleFriends {
                     if !friend.hideLocation {
                         friend.annotation = FriendAnnotation(user: friend)
                         mapView.addAnnotation(friend.annotation!)
@@ -137,18 +138,15 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             let senderId = notification.userInfo!["senderId"] as! String
             var senderFound = false
 
-            let friendLists = [self.nearbyFriendsManager.bestFriends, self.nearbyFriendsManager.nearbyFriends]
-            for list in friendLists {
-                if let friends = list {
-                    for friend in friends {
-                        if friend.objectId == senderId {
-                            self.mapView.showAnnotations([friend.annotation!], animated: true)
-                            delay(0.2) {
-                                self.mapView.selectAnnotation(friend.annotation!, animated: true)
-                            }
-                            senderFound = true
-                            break
+            if let visibleFriends = self.nearbyFriendsManager.visibleFriends {
+                for friend in visibleFriends {
+                    if friend.objectId == senderId {
+                        self.mapView.showAnnotations([friend.annotation!], animated: true)
+                        delay(0.2) {
+                            self.mapView.selectAnnotation(friend.annotation!, animated: true)
                         }
+                        senderFound = true
+                        break
                     }
                 }
             }
@@ -221,7 +219,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 refreshControl.removeFromSuperview()
             }
             return 0
-        } else if nearbyFriendsManager.nearbyFriends?.count == 0 && nearbyFriendsManager.bestFriends?.count == 0 {
+        } else if nearbyFriendsManager.visibleFriends?.count == 0 {
             showMessageInTable("No friends are nearby.")
             if refreshControl.superview == nil {
                 tableView.addSubview(refreshControl)

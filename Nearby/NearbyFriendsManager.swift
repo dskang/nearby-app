@@ -21,7 +21,19 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
-    var bestFriends: [User]?
+    var bestFriends: [User]? {
+        didSet {
+            bestFriends?.sort({ $0.name < $1.name })
+        }
+    }
+
+    var visibleFriends: [User]? {
+        if let nearbyFriends = nearbyFriends, bestFriends = bestFriends {
+            return nearbyFriends + bestFriends
+        } else {
+            return nil
+        }
+    }
 
     var updateOnActive: Bool = false {
         willSet {
