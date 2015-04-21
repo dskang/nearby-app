@@ -20,6 +20,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     let nearbyFriendsManager = NearbyFriendsManager()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
+    var userToFocusOnMap: User?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,9 +82,14 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
         }
 
+        // Save user to focus on map because removing annotations deselects annotation view
+        let savedUserToFocusOnMap = userToFocusOnMap
+
         // Remove annotations
         let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
         mapView.removeAnnotations(pins)
+
+        userToFocusOnMap = savedUserToFocusOnMap
 
         // Add annotations
         if let visibleFriends = nearbyFriendsManager.visibleFriends {
@@ -144,6 +150,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                         delay(0.2) {
                             self.mapView.selectAnnotation(friend.annotation!, animated: true)
                         }
+                        self.userToFocusOnMap = friend
                         senderFound = true
                         break
                     }
@@ -298,6 +305,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             delay(0.2) {
                 self.mapView.selectAnnotation(friend.annotation!, animated: true)
             }
+            userToFocusOnMap = friend
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
@@ -359,6 +367,22 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                     preferredStyle: .Alert)
                 alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
                 self.presentViewController(alertController, animated: true, completion: nil)
+            }
+        }
+    }
+
+    func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
+        userToFocusOnMap = nil
+    }
+
+    func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
+        if let target = userToFocusOnMap {
+            for view in views as! [MKAnnotationView] {
+                if let annotation = view.annotation as? FriendAnnotation {
+                    if annotation.user.objectId == target.objectId {
+                        mapView.selectAnnotation(annotation, animated: false)
+                    }
+                }
             }
         }
     }
