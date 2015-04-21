@@ -12,8 +12,11 @@ import CoreLocation
 class LocationRelay: NSObject, CLLocationManagerDelegate {
     let locationManager = CLLocationManager()
 
-    dynamic var userLocation: CLLocation? {
+    var userLocation: CLLocation? {
         didSet {
+            if oldValue == nil && userLocation != nil {
+                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.firstLocationUpdate, object: self)
+            }
             if let location = userLocation, user = User.currentUser() {
                 user.location = [
                     "timestamp": location.timestamp.timeIntervalSince1970,

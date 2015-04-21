@@ -15,7 +15,7 @@ class NearbyFriendsManager: NSObject {
     var updateTimer: NSTimer?
     var lastUpdated: NSDate?
 
-    dynamic var nearbyFriends: [User]? {
+    var nearbyFriends: [User]? {
         didSet {
             nearbyFriends?.sort({ $0.name < $1.name })
         }
@@ -89,6 +89,7 @@ class NearbyFriendsManager: NSObject {
                 if let result = result as? [String: [User]] {
                     self.bestFriends = result["bestFriends"]
                     self.nearbyFriends = result["nearbyFriends"]
+                    NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.updatedVisibleFriends, object: self)
                     if let completion = completion {
                         completion()
                     }

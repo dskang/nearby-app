@@ -31,6 +31,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "focusOnWaveSender:", name: GlobalConstants.NotificationKey.openedOnWave, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateVisibleFriends", name: GlobalConstants.NotificationKey.updatedVisibleFriends, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleFirstUserLocation", name: GlobalConstants.NotificationKey.firstLocationUpdate, object: nil)
 
         if let user = User.currentUser() {
             if !user.hideLocation {
@@ -69,6 +71,40 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         // Dispose of any resources that can be recreated.
     }
 
+    func updateVisibleFriends() {
+        refreshControl?.endRefreshing()
+
+        // Prevent adding pins when user toggles Stealth Mode very quickly
+        if let user = User.currentUser() {
+            if user.hideLocation {
+                return
+            }
+        }
+
+        // Remove annotations
+        let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
+        mapView.removeAnnotations(pins)
+
+        // Add annotations
+        if let visibleFriends = nearbyFriendsManager.visibleFriends {
+            for friend in visibleFriends {
+                if !friend.hideLocation {
+                    friend.annotation = FriendAnnotation(user: friend)
+                    mapView.addAnnotation(friend.annotation!)
+                }
+            }
+            tableView.reloadData()
+        }
+    }
+
+    func handleFirstUserLocation() {
+        if let location = locationRelay.userLocation {
+            mapView.showsUserLocation = true
+            centerAndZoomMapOnCoordinate(location.coordinate)
+            nearbyFriendsManager.startUpdates()
+        }
+    }
+
     func centerAndZoomMapOnCoordinate(coordinate: CLLocationCoordinate2D) {
         let degree = (nearbyDistance + 50) / 111000.0
         let span = MKCoordinateSpan(latitudeDelta: degree, longitudeDelta: degree)
@@ -79,42 +115,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     @IBAction func centerUserOnMap() {
         if let location = locationRelay.userLocation {
             centerAndZoomMapOnCoordinate(location.coordinate)
-        }
-    }
-
-    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
-        if keyPath == "userLocation" {
-            let oldLocation = change[NSKeyValueChangeOldKey] as? CLLocation
-            let newLocation = change[NSKeyValueChangeNewKey] as? CLLocation
-            if oldLocation == nil && newLocation != nil {
-                mapView.showsUserLocation = true
-                centerAndZoomMapOnCoordinate(newLocation!.coordinate)
-                nearbyFriendsManager.startUpdates()
-            }
-        } else if keyPath == "nearbyFriends" {
-            refreshControl?.endRefreshing()
-
-            // Prevent adding pins when user toggles Stealth Mode very quickly
-            if let user = User.currentUser() {
-                if user.hideLocation {
-                    return
-                }
-            }
-
-            // Remove annotations
-            let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
-            mapView.removeAnnotations(pins)
-
-            // Add annotations
-            if let visibleFriends = nearbyFriendsManager.visibleFriends {
-                for friend in visibleFriends {
-                    if !friend.hideLocation {
-                        friend.annotation = FriendAnnotation(user: friend)
-                        mapView.addAnnotation(friend.annotation!)
-                    }
-                }
-                tableView.reloadData()
-            }
         }
     }
 
