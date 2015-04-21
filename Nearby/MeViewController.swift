@@ -66,9 +66,9 @@ class MeViewController: UITableViewController {
                     installation.saveInBackground()
 
                     let nearbyVC = self.tabBarController?.viewControllers![0] as! NearbyViewController
-                    nearbyVC.nearbyFriendsManager.update {
-                        self.tabBarController?.selectedViewController = nearbyVC
-                    }
+                    self.tabBarController?.selectedViewController = nearbyVC
+                    nearbyVC.locationRelay.stopUpdates()
+                    nearbyVC.locationRelay.startUpdates()
                 }
             }
         }
