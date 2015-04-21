@@ -48,6 +48,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     func stopUpdates() {
         locationManager.stopUpdatingLocation()
+        userLocation = nil
     }
 
     // MARK: - CLLocationManagerDelegate

@@ -120,7 +120,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func enableStealthMode() {
         locationRelay.stopUpdates()
-        locationRelay.userLocation = nil
         mapView.showsUserLocation = false
         nearbyFriendsManager.stopUpdates()
         mapView.removeAnnotations(mapView.annotations)
@@ -187,6 +186,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         let installation = PFInstallation.currentInstallation()
         installation["user"] = user
         installation.saveInBackground()
+
+        // Refresh location if user logged out and is logging back in
+        locationRelay.userLocation = nil
 
         nearbyFriendsManager.syncFriends {
             self.locationRelay.startUpdates()
