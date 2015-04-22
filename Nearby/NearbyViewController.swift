@@ -87,7 +87,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 if let annotation = annotation as? FriendAnnotation {
                     var found = false
                     for friend in visibleFriends {
-                        if annotation.userId == friend.objectId {
+                        if annotation.userId == friend.objectId && !friend.hideLocation {
                             found = true
                             break
                         }
@@ -112,9 +112,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 if let annotation = friendAnnotation {
                     annotation.setValues(userName: friend.name, userLocation: friend.loc)
                 } else {
-                    let annotation = FriendAnnotation(userId: friend.objectId!)
-                    annotation.setValues(userName: friend.name, userLocation: friend.loc)
-                    mapView.addAnnotation(annotation)
+                    if !friend.hideLocation {
+                        let annotation = FriendAnnotation(userId: friend.objectId!)
+                        annotation.setValues(userName: friend.name, userLocation: friend.loc)
+                        mapView.addAnnotation(annotation)
+                    }
                 }
             }
 
