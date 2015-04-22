@@ -26,8 +26,6 @@ class User: PFUser, PFSubclassing {
         return CLLocation(coordinate: coordinate, altitude: 0, horizontalAccuracy: horizontalAccuracy, verticalAccuracy: 0, timestamp: timestamp)
     }
 
-    var annotation: FriendAnnotation!
-
     func hasBlocked(user: User) -> Bool {
         let results = self.blockedUsers.filter { $0.objectId == user.objectId }
         return results.count > 0

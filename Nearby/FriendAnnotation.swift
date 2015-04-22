@@ -10,15 +10,16 @@ import Foundation
 import MapKit
 
 class FriendAnnotation: MKPointAnnotation {
-    var user: User
+    let userId: String
 
-    init(user: User) {
-        self.user = user
-        super.init()
+    init(userId: String) {
+        self.userId = userId
+    }
 
-        let timeAgo = user.loc.timestamp.shortTimeAgoSinceNow()
-        self.title = user.name
-        self.subtitle = "\(timeAgo) ago"
-        self.coordinate = user.loc.coordinate
+    func setValues(#userName: String, userLocation: CLLocation) {
+        let timeAgo = userLocation.timestamp.shortTimeAgoSinceNow()
+        title = userName
+        subtitle = "\(timeAgo) ago"
+        coordinate = userLocation.coordinate
     }
 }

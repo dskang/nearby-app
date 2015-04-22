@@ -20,7 +20,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     let nearbyFriendsManager = NearbyFriendsManager()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
-    var userToFocusOnMap: User?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,23 +81,43 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
         }
 
-        // Save user to focus on map because removing annotations deselects annotation view
-        let savedUserToFocusOnMap = userToFocusOnMap
-
-        // Remove annotations
-        let pins = mapView.annotations.filter { !($0 is MKUserLocation) }
-        mapView.removeAnnotations(pins)
-
-        userToFocusOnMap = savedUserToFocusOnMap
-
-        // Add annotations
         if let visibleFriends = nearbyFriendsManager.visibleFriends {
-            for friend in visibleFriends {
-                if !friend.hideLocation {
-                    friend.annotation = FriendAnnotation(user: friend)
-                    mapView.addAnnotation(friend.annotation)
+            // Remove outdated annotations
+            for annotation in mapView.annotations {
+                if let annotation = annotation as? FriendAnnotation {
+                    var found = false
+                    for friend in visibleFriends {
+                        if annotation.userId == friend.objectId {
+                            found = true
+                            break
+                        }
+                    }
+                    if !found {
+                        mapView.removeAnnotation(annotation)
+                    }
                 }
             }
+
+            // Add or update annotations
+            for friend in visibleFriends {
+                var friendAnnotation: FriendAnnotation? = nil
+                for annotation in mapView.annotations {
+                    if let annotation = annotation as? FriendAnnotation {
+                        if annotation.userId == friend.objectId {
+                            friendAnnotation = annotation
+                            break
+                        }
+                    }
+                }
+                if let annotation = friendAnnotation {
+                    annotation.setValues(userName: friend.name, userLocation: friend.loc)
+                } else {
+                    let annotation = FriendAnnotation(userId: friend.objectId!)
+                    annotation.setValues(userName: friend.name, userLocation: friend.loc)
+                    mapView.addAnnotation(annotation)
+                }
+            }
+
             tableView.reloadData()
         }
     }
@@ -143,16 +162,16 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             let senderId = notification.userInfo!["senderId"] as! String
             var senderFound = false
 
-            if let visibleFriends = self.nearbyFriendsManager.visibleFriends {
-                for friend in visibleFriends {
-                    if friend.objectId == senderId {
-                        self.mapView.showAnnotations([friend.annotation], animated: true)
+            for annotation in self.mapView.annotations {
+                if let annotation = annotation as? FriendAnnotation {
+                    if annotation.userId == senderId {
+                        self.mapView.showAnnotations([annotation], animated: true)
                         delay(0.2) {
-                            self.mapView.selectAnnotation(friend.annotation, animated: true)
+                            self.mapView.selectAnnotation(annotation, animated: true)
                         }
-                        self.userToFocusOnMap = friend
                         senderFound = true
                         break
+
                     }
                 }
             }
@@ -300,12 +319,17 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
             self.presentViewController(alertController, animated: true, completion: nil)
         } else {
-            mapView.showAnnotations([friend.annotation], animated: true)
-            // Delay to make sure all of callout fits on screen after centering
-            delay(0.2) {
-                self.mapView.selectAnnotation(friend.annotation, animated: true)
+            for annotation in mapView.annotations {
+                if let annotation = annotation as? FriendAnnotation {
+                    if annotation.userId == friend.objectId {
+                        mapView.showAnnotations([annotation], animated: true)
+                        // Delay to make sure all of callout fits on screen after centering
+                        delay(0.2) {
+                            self.mapView.selectAnnotation(annotation, animated: true)
+                        }
+                    }
+                }
             }
-            userToFocusOnMap = friend
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
@@ -323,11 +347,16 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 view.annotation = annotation
             }
 
-            if let user = User.currentUser() {
-                if user.hasBestFriend(annotation.user) {
-                    view.pinColor = MKPinAnnotationColor.Purple
-                } else {
-                    view.pinColor = MKPinAnnotationColor.Red
+            if let user = User.currentUser(), visibleFriends = nearbyFriendsManager.visibleFriends {
+                for friend in visibleFriends {
+                    if friend.objectId == annotation.userId {
+                        if user.hasBestFriend(friend) {
+                            view.pinColor = MKPinAnnotationColor.Purple
+                        } else {
+                            view.pinColor = MKPinAnnotationColor.Red
+                        }
+                        break
+                    }
                 }
             }
 
@@ -343,8 +372,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
         let annotation = view.annotation as! FriendAnnotation
-        let friend = annotation.user
-        let params = ["recipientId": friend.objectId!]
+        let params = ["recipientId": annotation.userId]
         PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
@@ -365,22 +393,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                     preferredStyle: .Alert)
                 alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
                 self.presentViewController(alertController, animated: true, completion: nil)
-            }
-        }
-    }
-
-    func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
-        userToFocusOnMap = nil
-    }
-
-    func mapView(mapView: MKMapView!, didAddAnnotationViews views: [AnyObject]!) {
-        if let target = userToFocusOnMap {
-            for view in views as! [MKAnnotationView] {
-                if let annotation = view.annotation as? FriendAnnotation {
-                    if annotation.user.objectId == target.objectId {
-                        mapView.selectAnnotation(annotation, animated: false)
-                    }
-                }
             }
         }
     }

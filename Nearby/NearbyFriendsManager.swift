@@ -78,8 +78,6 @@ class NearbyFriendsManager: NSObject {
     }
 
     func update(completion: (() -> Void)? = nil) {
-        // NB: If lastUpdated is updated inside the success callback, there is a race condition in which nearbyFriends may be updated on the opening of a wave but the pin will lose focus if nearbyFriends are updated again (second update will be called between the first one being called and before it returns)
-        lastUpdated = NSDate()
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
@@ -89,6 +87,7 @@ class NearbyFriendsManager: NSObject {
                 if let result = result as? [String: [User]] {
                     self.bestFriends = result["bestFriends"]
                     self.nearbyFriends = result["nearbyFriends"]
+                    self.lastUpdated = NSDate()
                     NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.updatedVisibleFriends, object: self)
                     if let completion = completion {
                         completion()
