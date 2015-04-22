@@ -96,7 +96,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             for friend in visibleFriends {
                 if !friend.hideLocation {
                     friend.annotation = FriendAnnotation(user: friend)
-                    mapView.addAnnotation(friend.annotation!)
+                    mapView.addAnnotation(friend.annotation)
                 }
             }
             tableView.reloadData()
@@ -146,9 +146,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             if let visibleFriends = self.nearbyFriendsManager.visibleFriends {
                 for friend in visibleFriends {
                     if friend.objectId == senderId {
-                        self.mapView.showAnnotations([friend.annotation!], animated: true)
+                        self.mapView.showAnnotations([friend.annotation], animated: true)
                         delay(0.2) {
-                            self.mapView.selectAnnotation(friend.annotation!, animated: true)
+                            self.mapView.selectAnnotation(friend.annotation, animated: true)
                         }
                         self.userToFocusOnMap = friend
                         senderFound = true
@@ -300,10 +300,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
             self.presentViewController(alertController, animated: true, completion: nil)
         } else {
-            mapView.showAnnotations([friend.annotation!], animated: true)
+            mapView.showAnnotations([friend.annotation], animated: true)
             // Delay to make sure all of callout fits on screen after centering
             delay(0.2) {
-                self.mapView.selectAnnotation(friend.annotation!, animated: true)
+                self.mapView.selectAnnotation(friend.annotation, animated: true)
             }
             userToFocusOnMap = friend
         }
@@ -313,9 +313,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     // MARK: - MKMapViewDelegate
 
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-        if let annotation = annotation as? MKUserLocation {
-            return nil
-        } else if let annotation = annotation as? FriendAnnotation {
+        if let annotation = annotation as? FriendAnnotation {
             let identifier = "PinAnnotationView"
             var view: MKPinAnnotationView! = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as? MKPinAnnotationView
             if view == nil {
