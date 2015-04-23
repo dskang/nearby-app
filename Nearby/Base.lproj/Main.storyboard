@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="lHN-Nv-fJ8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="lHN-Nv-fJ8">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -503,11 +503,11 @@
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="constraints">
-                                                    <exclude reference="zhx-AJ-q9I"/>
-                                                    <exclude reference="eJq-Jl-uFC"/>
-                                                    <exclude reference="J8L-Dd-Pfc"/>
                                                     <exclude reference="41Q-rj-45d"/>
+                                                    <exclude reference="J8L-Dd-Pfc"/>
                                                     <exclude reference="Yv5-7k-cD4"/>
+                                                    <exclude reference="eJq-Jl-uFC"/>
+                                                    <exclude reference="zhx-AJ-q9I"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
