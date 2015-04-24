@@ -55,7 +55,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
 
         if User.currentUser() == nil {
-            let logInController = PFLogInViewController()
+            let logInController = NearbyLogInViewController()
             logInController.delegate = self
             logInController.facebookPermissions = ["user_friends"]
             logInController.fields = (PFLogInFields.Facebook)
@@ -403,5 +403,20 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 self.presentViewController(alertController, animated: true, completion: nil)
             }
         }
+    }
+}
+
+class NearbyLogInViewController : PFLogInViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let logoView = UIImageView(image: UIImage(named:"logo"))
+        self.logInView!.logo = logoView
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        logInView!.logo!.frame = CGRect(x: 64.0, y: 301.0, width: 244.0, height: 91.0)
     }
 }
