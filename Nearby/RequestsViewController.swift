@@ -23,8 +23,7 @@ class RequestsViewController: PFQueryTableViewController {
         PFCloud.callFunctionInBackground("addBestFriend", withParameters: params) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
-                println(message)
-                // TODO: Send to Parse
+                PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 self.loadObjects()
                 if let user = User.currentUser() {
@@ -45,8 +44,7 @@ class RequestsViewController: PFQueryTableViewController {
         PFCloud.callFunctionInBackground("removeBestFriendRequest", withParameters: params) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
-                println(message)
-                // TODO: Send to Parse
+                PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 self.loadObjects()
             }

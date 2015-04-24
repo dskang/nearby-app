@@ -81,8 +81,7 @@ class NearbyFriendsManager: NSObject {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
-                println(message)
-                // TODO: Send to Parse
+                PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 if let result = result as? [String: [User]] {
                     self.bestFriends = result["bestFriends"]
@@ -101,8 +100,7 @@ class NearbyFriendsManager: NSObject {
         PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
-                println(message)
-                // TODO: Send to Parse
+                PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 if let completion = completion {
                     completion()
