@@ -375,15 +375,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 }
             }
 
-            let imageView = UIImageView()
-            let blueTint = view.tintColor
-            imageView.tintColor = blueTint
-            let waveImage = UIImage(named: "happy")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-            imageView.image = waveImage
-
-            let rightButton = UIButton(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: waveImage.size))
-            rightButton.setImage(waveImage, forState: UIControlState.Normal)
-            view.rightCalloutAccessoryView = rightButton
+            let waveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+            waveButton.setTitle("👋🏽", forState: UIControlState.Normal)
+            waveButton.setTitleColor(UIColor.darkTextColor(), forState: UIControlState.Normal)
+            waveButton.titleLabel?.font = UIFont.systemFontOfSize(30.0)
+            view.rightCalloutAccessoryView = waveButton
 
             return view
         } else {
@@ -393,7 +389,9 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
         let annotation = view.annotation as! FriendAnnotation
-        let params = ["recipientId": annotation.userId]
+        let waveButton = control as! UIButton
+        let message = waveButton.titleLabel!.text!
+        let params = ["recipientId": annotation.userId, "message": message]
         PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
