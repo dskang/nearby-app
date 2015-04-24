@@ -60,9 +60,13 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="zgg-mC-O2b"/>
                                 </connections>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7En-Eb-fa5">
-                                <rect key="frame" x="562" y="277" width="22" height="22"/>
-                                <state key="normal">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7En-Eb-fa5">
+                                <rect key="frame" x="562" y="281" width="38" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="38" id="SZb-MU-be7"/>
+                                    <constraint firstAttribute="height" constant="34" id="Uaz-SB-FEY"/>
+                                </constraints>
+                                <state key="normal" image="navigate">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -72,10 +76,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="bottom" secondItem="7En-Eb-fa5" secondAttribute="bottom" constant="16" id="1IT-xP-Qut"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="bottom" secondItem="7En-Eb-fa5" secondAttribute="bottom" id="1IT-xP-Qut"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="4A3-Sk-JOw"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="height" secondItem="MX9-uh-OiU" secondAttribute="height" multiplier="4:3" id="5Vq-Dl-djf"/>
-                            <constraint firstItem="7En-Eb-fa5" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="5lS-Bc-gmR"/>
+                            <constraint firstItem="7En-Eb-fa5" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="5lS-Bc-gmR"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="DrE-Hb-dqG" secondAttribute="leading" id="5mJ-tM-aeO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" constant="-16" id="8mm-ve-f4k"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="B49-k5-Q3N"/>
@@ -142,7 +146,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Nearby" id="1dd-6c-GCn"/>
+                    <tabBarItem key="tabBarItem" title="Nearby" image="nearby" id="1dd-6c-GCn"/>
                     <connections>
                         <outlet property="mapView" destination="DrE-Hb-dqG" id="OmJ-U6-B9G"/>
                         <outlet property="tableView" destination="MX9-uh-OiU" id="fLy-7v-0c9"/>
@@ -368,7 +372,7 @@
         <scene sceneID="2pP-Sz-lYk">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GdL-FQ-kNY" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Friends" id="ml4-kW-jfh"/>
+                    <tabBarItem key="tabBarItem" title="Friends" image="friends" id="ml4-kW-jfh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="CPQ-as-i17">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -535,7 +539,7 @@
         <scene sceneID="XuB-Rq-4bY">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hS8-Mz-2f9" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Me" id="raK-Bc-os2"/>
+                    <tabBarItem key="tabBarItem" title="Me" image="me" id="raK-Bc-os2"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="KX9-K0-psD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -551,4 +555,10 @@
             <point key="canvasLocation" x="1520" y="1160"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="friends" width="25" height="25"/>
+        <image name="me" width="25" height="25"/>
+        <image name="navigate" width="22" height="22"/>
+        <image name="nearby" width="25" height="25"/>
+    </resources>
 </document>

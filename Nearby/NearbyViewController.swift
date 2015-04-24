@@ -362,8 +362,14 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 }
             }
 
-            let rightButton = UIButton.buttonWithType(UIButtonType.ContactAdd) as! UIButton
-            rightButton.addTarget(nil, action: nil, forControlEvents: UIControlEvents.TouchUpInside)
+            let imageView = UIImageView()
+            let blueTint = view.tintColor
+            imageView.tintColor = blueTint
+            let waveImage = UIImage(named: "happy")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+            imageView.image = waveImage
+
+            let rightButton = UIButton(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: waveImage.size))
+            rightButton.setImage(waveImage, forState: UIControlState.Normal)
             view.rightCalloutAccessoryView = rightButton
 
             return view
