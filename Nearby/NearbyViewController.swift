@@ -35,6 +35,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleFirstUserLocation", name: GlobalConstants.NotificationKey.firstLocationUpdate, object: nil)
 
         if let user = User.currentUser() {
+            if user.fbId == nil {
+                getFacebookData()
+            }
+
             if !user.hideLocation {
                 locationRelay.startUpdates()
             }
@@ -196,19 +200,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
         dismissViewControllerAnimated(true, completion: nil)
         let user = user as! User
-        let request = FBSDKGraphRequest(graphPath: "me", parameters: nil)
-        request.startWithCompletionHandler() { connection, result, error in
-            if error == nil {
-                let userData = result as! [NSObject: AnyObject]
-                user.name = userData["name"] as! String
-                user.firstName = userData["first_name"] as! String
-                user.lastName = userData["last_name"] as! String
-                user.fbId = userData["id"] as! String
-                user.hideLocation = false
-                user.saveInBackground()
-            }
-            // TODO: Retry getting user's data at later point if request fails
-        }
+        getFacebookData()
 
         // Associate the device with the user
         let installation = PFInstallation.currentInstallation()
@@ -220,6 +212,27 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
         nearbyFriendsManager.syncFriends {
             self.locationRelay.startUpdates()
+        }
+    }
+
+    func getFacebookData() {
+        if let user = User.currentUser() {
+            let request = FBSDKGraphRequest(graphPath: "me", parameters: nil)
+            request.startWithCompletionHandler() { connection, result, error in
+                if let error = error {
+                    let errorCode = error.userInfo![FBSDKGraphRequestErrorGraphErrorCode] as! Int
+                    let message = error.userInfo![FBSDKErrorDeveloperMessageKey] as! String
+                    PFAnalytics.trackEvent("error", dimensions:["code": "\(errorCode)", "message": message])
+                } else {
+                    let userData = result as! [NSObject: AnyObject]
+                    user.name = userData["name"] as! String
+                    user.firstName = userData["first_name"] as! String
+                    user.lastName = userData["last_name"] as! String
+                    user.fbId = userData["id"] as! String
+                    user.hideLocation = false
+                    user.saveInBackground()
+                }
+            }
         }
     }
 
@@ -384,8 +397,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
             if let error = error {
                 let message = error.userInfo!["error"] as! String
-                println(message)
-                // TODO: Send to Parse
+                PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 let alertController = UIAlertController(
                     title: message,
                     message: nil,

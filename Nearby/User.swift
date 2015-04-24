@@ -10,7 +10,7 @@ import Foundation
 import Parse
 
 class User: PFUser, PFSubclassing {
-    @NSManaged var fbId: String
+    @NSManaged var fbId: String!
     @NSManaged var name: String
     @NSManaged var firstName: String
     @NSManaged var lastName: String

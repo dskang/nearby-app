@@ -13,6 +13,7 @@
 #import <ParseUI/ParseUI.h>
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKCoreKit/FBSDKConstants.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
 #import "NSDate+DateTools.h"
