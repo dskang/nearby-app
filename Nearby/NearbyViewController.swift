@@ -210,9 +210,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     }
 
     @IBAction func changeEmoji() {
-        emojiTextField.becomeFirstResponder()
-        tap = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
-        view.addGestureRecognizer(tap)
+        if !emojiTextField.isFirstResponder() {
+            emojiTextField.becomeFirstResponder()
+            tap = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+            view.addGestureRecognizer(tap)
+        }
     }
 
     func dismissKeyboard() {
