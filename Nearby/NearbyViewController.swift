@@ -375,14 +375,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 }
             }
 
-            if let user = User.currentUser() {
-                let waveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-                let waveMessage = user.defaultMessage ?? "👋🏽"
-                waveButton.setTitle(waveMessage, forState: UIControlState.Normal)
-                waveButton.setTitleColor(UIColor.darkTextColor(), forState: UIControlState.Normal)
-                waveButton.titleLabel?.font = UIFont.systemFontOfSize(30.0)
-                view.rightCalloutAccessoryView = waveButton
-            }
+            let waveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+            waveButton.setTitle("👋🏽", forState: UIControlState.Normal)
+            waveButton.setTitleColor(UIColor.darkTextColor(), forState: UIControlState.Normal)
+            waveButton.titleLabel?.font = UIFont.systemFontOfSize(30.0)
+            view.rightCalloutAccessoryView = waveButton
 
             return view
         } else {
