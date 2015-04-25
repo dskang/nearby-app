@@ -135,6 +135,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
         }
+        let isSilentNotification = userInfo["aps"]?["content-available"] != nil
+        if isSilentNotification {
+            if let type = userInfo["type"] as? String {
+                switch type {
+                case "updateLocation":
+                    NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.firstLocationUpdate, object: nil, queue: nil) {
+                        notification in
+                        NSNotificationCenter.defaultCenter().removeObserver(self, name: GlobalConstants.NotificationKey.firstLocationUpdate, object: nil)
+                        completionHandler(UIBackgroundFetchResult.NewData)
+                    }
+                    LocationRelay.sharedInstance.stopUpdates()
+                    LocationRelay.sharedInstance.startUpdates()
+                default: break
+                }
+            }
+
+        }
         completionHandler(UIBackgroundFetchResult.NoData)
     }
 
