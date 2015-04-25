@@ -11,15 +11,19 @@ import Parse
 import CoreLocation
 import MapKit
 
-class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate {
+class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var emojiButton: UIButton!
 
     let locationRelay = LocationRelay()
     let nearbyFriendsManager = NearbyFriendsManager()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
+    let emojiTextField = UITextField()
+    var tap: UIGestureRecognizer!
+    var defaultWaveEmoji = "👋"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +50,16 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self.nearbyFriendsManager, action: "update:", forControlEvents: UIControlEvents.ValueChanged)
+
+        emojiButton.hidden = true
+        emojiTextField.delegate = self
+        emojiTextField.returnKeyType = UIReturnKeyType.Done
+        view.addSubview(emojiTextField)
+
+        // Include skin tone if iOS version >= 8.3
+        if NSProcessInfo().isOperatingSystemAtLeastVersion(NSOperatingSystemVersion(majorVersion: 8, minorVersion: 3, patchVersion: 0)) {
+            defaultWaveEmoji += "\u{1F3FD}"
+        }
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -193,6 +207,17 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 self.presentViewController(alertController, animated: true, completion: nil)
             }
         }
+    }
+
+    @IBAction func changeEmoji() {
+        emojiTextField.becomeFirstResponder()
+        tap = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
+    }
+
+    func dismissKeyboard() {
+        emojiTextField.resignFirstResponder()
+        view.removeGestureRecognizer(tap)
     }
 
     // MARK: - PFLogInViewControllerDelegate
@@ -376,7 +401,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
             }
 
             let waveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-            waveButton.setTitle("👋🏽", forState: UIControlState.Normal)
+            waveButton.setTitle(defaultWaveEmoji, forState: UIControlState.Normal)
             waveButton.setTitleColor(UIColor.darkTextColor(), forState: UIControlState.Normal)
             waveButton.titleLabel?.font = UIFont.systemFontOfSize(30.0)
             view.rightCalloutAccessoryView = waveButton
@@ -413,6 +438,42 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 self.presentViewController(alertController, animated: true, completion: nil)
             }
         }
+    }
+
+    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
+        if view.annotation is FriendAnnotation {
+            emojiButton.hidden = false
+        }
+    }
+
+    func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
+        if view.annotation is FriendAnnotation {
+            emojiButton.hidden = true
+            // Delay until callout is closed
+            delay(0.5) {
+                let waveButton = view.rightCalloutAccessoryView as! UIButton
+                waveButton.setTitle(self.defaultWaveEmoji, forState: UIControlState.Normal)
+            }
+        }
+    }
+
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        dismissKeyboard()
+        return false
+    }
+
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        let isEmoji = textField.textInputMode == nil
+        let notBackspace = count(string) > 0
+        if isEmoji && notBackspace {
+            let selectedAnnotation = mapView.selectedAnnotations[0] as! FriendAnnotation
+            let view = mapView.viewForAnnotation(selectedAnnotation)
+            let waveButton = view.rightCalloutAccessoryView as! UIButton
+            waveButton.setTitle(string, forState: UIControlState.Normal)
+            dismissKeyboard()
+        }
+        return false
     }
 }
 

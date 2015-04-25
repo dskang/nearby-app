@@ -73,6 +73,19 @@
                                     <action selector="centerUserOnMap" destination="BYZ-38-t0r" eventType="touchUpInside" id="2lv-l4-h6X"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="inW-8e-MSw">
+                                <rect key="frame" x="524" y="281" width="38" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="2Op-IG-9Lb"/>
+                                    <constraint firstAttribute="width" constant="38" id="reh-nI-QgK"/>
+                                </constraints>
+                                <state key="normal" image="happy">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="changeEmoji" destination="BYZ-38-t0r" eventType="touchUpInside" id="LRI-LU-uTT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -88,6 +101,7 @@
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="HJf-gO-gH7"/>
                             <constraint firstAttribute="bottomMargin" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="HNa-sQ-3ol"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="I5e-26-TpS"/>
+                            <constraint firstItem="7En-Eb-fa5" firstAttribute="leading" secondItem="inW-8e-MSw" secondAttribute="trailing" id="J3P-F0-IU0"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="Jks-xq-lpP"/>
                             <constraint firstAttribute="bottom" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="NQc-cY-TqY"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="NeV-mS-FpU"/>
@@ -105,6 +119,7 @@
                             <constraint firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="j7J-ns-wWe"/>
                             <constraint firstAttribute="bottom" secondItem="DrE-Hb-dqG" secondAttribute="bottom" id="jNH-HH-CEr"/>
                             <constraint firstAttribute="trailingMargin" secondItem="MX9-uh-OiU" secondAttribute="trailing" id="nOi-TF-v07"/>
+                            <constraint firstItem="inW-8e-MSw" firstAttribute="bottom" secondItem="DrE-Hb-dqG" secondAttribute="bottom" id="oOW-4J-G0S"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="trailing" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="r4E-n2-XgI"/>
                             <constraint firstAttribute="trailing" secondItem="MX9-uh-OiU" secondAttribute="trailing" id="sKH-iP-2Yw"/>
                             <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="sPQ-4G-Mb9"/>
@@ -148,6 +163,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Nearby" image="nearby" id="1dd-6c-GCn"/>
                     <connections>
+                        <outlet property="emojiButton" destination="inW-8e-MSw" id="76C-6h-LJI"/>
                         <outlet property="mapView" destination="DrE-Hb-dqG" id="OmJ-U6-B9G"/>
                         <outlet property="tableView" destination="MX9-uh-OiU" id="fLy-7v-0c9"/>
                     </connections>
@@ -557,6 +573,7 @@
     </scenes>
     <resources>
         <image name="friends" width="25" height="25"/>
+        <image name="happy" width="22" height="22"/>
         <image name="me" width="25" height="25"/>
         <image name="navigate" width="22" height="22"/>
         <image name="nearby" width="25" height="25"/>
