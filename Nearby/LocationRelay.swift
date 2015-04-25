@@ -10,6 +10,8 @@ import Foundation
 import CoreLocation
 
 class LocationRelay: NSObject, CLLocationManagerDelegate {
+    static let sharedInstance = LocationRelay()
+
     let locationManager = CLLocationManager()
 
     var userLocation: CLLocation? {
@@ -39,6 +41,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
             switch CLLocationManager.authorizationStatus() {
             case .AuthorizedAlways:
                 locationManager.startUpdatingLocation()
+                locationManager.startMonitoringSignificantLocationChanges()
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
             case .Restricted, .Denied:
@@ -51,6 +54,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     func stopUpdates() {
         locationManager.stopUpdatingLocation()
+        locationManager.stopMonitoringSignificantLocationChanges()
         userLocation = nil
     }
 
@@ -59,6 +63,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedAlways {
             locationManager.startUpdatingLocation()
+            locationManager.startMonitoringSignificantLocationChanges()
         }
     }
 

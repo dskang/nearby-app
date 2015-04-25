@@ -17,7 +17,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var emojiButton: UIButton!
 
-    let locationRelay = LocationRelay()
+    let locationRelay = LocationRelay.sharedInstance
     let nearbyFriendsManager = NearbyFriendsManager()
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!

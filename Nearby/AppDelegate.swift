@@ -41,6 +41,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(settings)
         application.registerForRemoteNotifications()
 
+        // Restart location services if app is relaunched due to significant location change
+        if launchOptions?[UIApplicationLaunchOptionsLocationKey] != nil {
+            LocationRelay.sharedInstance.startUpdates()
+        }
+
         return true
     }
 
