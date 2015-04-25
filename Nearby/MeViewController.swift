@@ -9,11 +9,13 @@
 import Foundation
 import Parse
 
-class MeViewController: UITableViewController {
+class MeViewController: UITableViewController, UITextFieldDelegate {
 
     @IBOutlet weak var logOutCell: UITableViewCell!
     @IBOutlet weak var stealthModeSwitch: UISwitch!
     @IBOutlet weak var testUserCell: UITableViewCell!
+    @IBOutlet weak var defaultMessageCell: UITableViewCell!
+    @IBOutlet weak var defaultMessageTextField: NoCursorTextField!
 
     @IBAction func stealthModeToggled(sender: UISwitch) {
         if let user = User.currentUser() {
@@ -29,11 +31,14 @@ class MeViewController: UITableViewController {
         super.viewDidLoad()
         if let user = User.currentUser() {
             stealthModeSwitch.on = user.hideLocation
+            if let defaultMessage = user.defaultMessage {
+                defaultMessageTextField.text = defaultMessage
+            }
         }
     }
 
     override func viewDidAppear(animated: Bool) {
-        // To make "Switch to Test User" appear and disappear
+        // Make "Switch to Test User" appear and disappear appropriately
         tableView.reloadData()
     }
 
@@ -44,6 +49,13 @@ class MeViewController: UITableViewController {
             }
         }
         return super.numberOfSectionsInTableView(tableView) - 1
+    }
+
+    func updateDefaultMessage(message: String) {
+        if let user = User.currentUser() {
+            user.defaultMessage = message
+            user.saveInBackground()
+        }
     }
 
     // MARK: - UITableViewDelegate
@@ -57,6 +69,8 @@ class MeViewController: UITableViewController {
             nearbyVC.locationRelay.stopUpdates()
             nearbyVC.nearbyFriendsManager.stopUpdates()
             tabBarController?.selectedViewController = nearbyVC
+        } else if cell == defaultMessageCell {
+            defaultMessageTextField.becomeFirstResponder()
         } else if cell == testUserCell {
             PFUser.logInWithUsernameInBackground("fzbOL1KqIvbZE2lG2UMdo56ER", password: "test") { user, error in
                 if let user = user as? User {
@@ -72,5 +86,38 @@ class MeViewController: UITableViewController {
                 }
             }
         }
+    }
+
+    // MARK: - UITextFieldDelegate
+
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
+    }
+
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        let isEmoji = textField.textInputMode == nil
+        let notBackspace = count(string) > 0
+        if isEmoji && notBackspace {
+            textField.text = string
+            textField.resignFirstResponder()
+            updateDefaultMessage(textField.text)
+        }
+        return false
+    }
+}
+
+class NoCursorTextField: UITextField {
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        // Disable paste
+        // NB: Making caret invisible already makes it impossible to bring up paste option so this is being super safe
+        if action == "paste:" {
+            return false
+        }
+        return super.canPerformAction(action, withSender: sender)
+    }
+
+    override func caretRectForPosition(position: UITextPosition!) -> CGRect {
+        return CGRectZero
     }
 }

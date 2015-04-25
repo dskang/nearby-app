@@ -15,6 +15,7 @@ class User: PFUser, PFSubclassing {
     @NSManaged var firstName: String
     @NSManaged var lastName: String
     @NSManaged var location: [String: Double]
+    @NSManaged var defaultMessage: String!
     @NSManaged var hideLocation: Bool
     @NSManaged var bestFriends: [User]
     @NSManaged var blockedUsers: [User]
