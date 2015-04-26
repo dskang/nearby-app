@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        let isSilentNotification = userInfo["aps"]?["content-available"] != nil
+        let isSilentNotification = userInfo["aps"]?["content-available"]! != nil
         if isSilentNotification {
             if let type = userInfo["type"] as? String {
                 switch type {
