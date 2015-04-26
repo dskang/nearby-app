@@ -17,8 +17,10 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     var userLocation: CLLocation? {
         didSet {
+            if oldValue == nil && userLocation != nil {
+                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.initialUserLocationUpdate, object: self)
+            }
             if let location = userLocation, user = User.currentUser() {
-                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.userLocationUpdated, object: self)
                 user.location = [
                     "timestamp": location.timestamp.timeIntervalSince1970,
                     "latitude": location.coordinate.latitude,
@@ -61,7 +63,6 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     func stopUpdates() {
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
-        userLocation = nil
     }
 
     // MARK: - CLLocationManagerDelegate
@@ -77,7 +78,8 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         let location = locations.last as! CLLocation
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let locationChanged = userLocation == nil || userLocation!.distanceFromLocation(location) > 5.0
-        if recent && locationChanged {
+        let locationOld = userLocation == nil || abs(userLocation!.timestamp.timeIntervalSinceNow) >= 60.0
+        if recent && (locationChanged || locationOld) {
             userLocation = location
         }
     }

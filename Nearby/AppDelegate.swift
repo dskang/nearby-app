@@ -197,7 +197,7 @@ struct GlobalConstants {
         static let stealthModeOff = "com.dskang.stealthModeOffNotification"
         static let openedOnWave = "com.dskang.openedOnWaveNotification"
         static let updatedVisibleFriends = "com.dskang.updatedVisibleFriendsNotification"
-        static let userLocationUpdated = "com.dskang.userLocationUpdatedNotification"
+        static let initialUserLocationUpdate = "com.dskang.initialUserLocationUpdate"
         static let userLocationSaved = "com.dskang.userLocationSavedNotification"
     }
 }

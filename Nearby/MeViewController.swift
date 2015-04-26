@@ -53,9 +53,12 @@ class MeViewController: UITableViewController {
         let cell = tableView.cellForRowAtIndexPath(indexPath)
         if cell == logOutCell {
             User.logOut()
+
+            LocationRelay.sharedInstance.userLocation = nil
+            LocationRelay.sharedInstance.stopUpdates()
+
             let nearbyVC = tabBarController?.viewControllers![0] as! NearbyViewController
             nearbyVC.mapView.showsUserLocation = false
-            nearbyVC.locationRelay.stopUpdates()
             nearbyVC.nearbyFriendsManager.stopUpdates()
             tabBarController?.selectedViewController = nearbyVC
         } else if cell == testUserCell {
@@ -66,11 +69,13 @@ class MeViewController: UITableViewController {
                     installation["user"] = user
                     installation.saveInBackground()
 
+                    let locationRelay = LocationRelay.sharedInstance
+                    locationRelay.userLocation = nil
+                    locationRelay.stopUpdates()
+                    locationRelay.startUpdates()
+
                     let nearbyVC = self.tabBarController?.viewControllers![0] as! NearbyViewController
                     self.tabBarController?.selectedViewController = nearbyVC
-                    nearbyVC.mapView.showsUserLocation = false
-                    nearbyVC.locationRelay.stopUpdates()
-                    nearbyVC.locationRelay.startUpdates()
                 }
             }
         }

@@ -36,7 +36,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "focusOnWaveSender:", name: GlobalConstants.NotificationKey.openedOnWave, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateVisibleFriends", name: GlobalConstants.NotificationKey.updatedVisibleFriends, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "showUserLocation", name: GlobalConstants.NotificationKey.userLocationUpdated, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleInitialUserLocation", name: GlobalConstants.NotificationKey.initialUserLocationUpdate, object: nil)
 
         if let user = User.currentUser() {
             if user.fbId == nil {
@@ -142,13 +142,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
     }
 
-    func showUserLocation() {
-        if !mapView.showsUserLocation {
-            if let location = locationRelay.userLocation {
-                mapView.showsUserLocation = true
-                centerAndZoomMapOnCoordinate(location.coordinate)
-                nearbyFriendsManager.startUpdates()
-            }
+    func handleInitialUserLocation() {
+        if let location = locationRelay.userLocation {
+            mapView.showsUserLocation = true
+            centerAndZoomMapOnCoordinate(location.coordinate)
+            nearbyFriendsManager.startUpdates()
         }
     }
 
@@ -167,6 +165,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func enableStealthMode() {
         locationRelay.stopUpdates()
+        locationRelay.userLocation = nil
         mapView.showsUserLocation = false
         nearbyFriendsManager.stopUpdates()
         mapView.removeAnnotations(mapView.annotations)
