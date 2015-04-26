@@ -54,6 +54,7 @@ class MeViewController: UITableViewController {
         if cell == logOutCell {
             User.logOut()
             let nearbyVC = tabBarController?.viewControllers![0] as! NearbyViewController
+            nearbyVC.mapView.showsUserLocation = false
             nearbyVC.locationRelay.stopUpdates()
             nearbyVC.nearbyFriendsManager.stopUpdates()
             tabBarController?.selectedViewController = nearbyVC
@@ -67,6 +68,7 @@ class MeViewController: UITableViewController {
 
                     let nearbyVC = self.tabBarController?.viewControllers![0] as! NearbyViewController
                     self.tabBarController?.selectedViewController = nearbyVC
+                    nearbyVC.mapView.showsUserLocation = false
                     nearbyVC.locationRelay.stopUpdates()
                     nearbyVC.locationRelay.startUpdates()
                 }
