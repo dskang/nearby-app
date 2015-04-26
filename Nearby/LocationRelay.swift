@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import Parse
 
 class LocationRelay: NSObject, CLLocationManagerDelegate {
     static let sharedInstance = LocationRelay()
@@ -16,17 +17,22 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     var userLocation: CLLocation? {
         didSet {
-            if oldValue == nil && userLocation != nil {
-                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.firstLocationUpdate, object: self)
-            }
             if let location = userLocation, user = User.currentUser() {
+                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.userLocationUpdated, object: self)
                 user.location = [
                     "timestamp": location.timestamp.timeIntervalSince1970,
                     "latitude": location.coordinate.latitude,
                     "longitude": location.coordinate.longitude,
                     "accuracy": location.horizontalAccuracy
                 ]
-                user.saveInBackground()
+                user.saveInBackgroundWithBlock { success, error in
+                    if let error = error {
+                        let message = error.userInfo!["error"] as! String
+                        PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
+                    } else {
+                        NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.userLocationSaved, object: self)
+                    }
+                }
             }
         }
     }

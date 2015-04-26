@@ -122,37 +122,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        PFPush.handlePush(userInfo)
-        if application.applicationState == UIApplicationState.Inactive {
-            if let type = userInfo["type"] as? String {
-                switch type {
-                case "wave":
-                    handleWave(userInfo)
-                case "bestFriendRequest":
-                    handleBestFriendRequest(userInfo)
-                default: break
-                }
-            }
-            PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
-        }
         let isSilentNotification = userInfo["aps"]?["content-available"] != nil
         if isSilentNotification {
             if let type = userInfo["type"] as? String {
                 switch type {
                 case "updateLocation":
-                    NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.firstLocationUpdate, object: nil, queue: nil) {
-                        notification in
-                        NSNotificationCenter.defaultCenter().removeObserver(self, name: GlobalConstants.NotificationKey.firstLocationUpdate, object: nil)
-                        completionHandler(UIBackgroundFetchResult.NewData)
+                    if let user = User.currentUser() {
+                        if !user.hideLocation {
+                            updateLocation(completionHandler)
+                        }
                     }
-                    LocationRelay.sharedInstance.stopUpdates()
-                    LocationRelay.sharedInstance.startUpdates()
-                default: break
+                default:
+                    completionHandler(UIBackgroundFetchResult.NoData)
                 }
             }
-
+        } else {
+            PFPush.handlePush(userInfo)
+            if application.applicationState == UIApplicationState.Inactive {
+                if let type = userInfo["type"] as? String {
+                    switch type {
+                    case "wave":
+                        handleWave(userInfo)
+                    case "bestFriendRequest":
+                        handleBestFriendRequest(userInfo)
+                    default: break
+                    }
+                }
+                PFAnalytics.trackAppOpenedWithRemoteNotificationPayload(userInfo)
+            }
+            completionHandler(UIBackgroundFetchResult.NoData)
         }
-        completionHandler(UIBackgroundFetchResult.NoData)
+    }
+
+    // FIXME: Ugly solution to make sure block with completionHandler is only called once
+    private var observer: NSObjectProtocol?
+    func updateLocation(completionHandler: (UIBackgroundFetchResult) -> Void) {
+        if let observer = observer {
+            NSNotificationCenter.defaultCenter().removeObserver(observer)
+        }
+        observer = NSNotificationCenter.defaultCenter().addObserverForName(GlobalConstants.NotificationKey.userLocationSaved, object: nil, queue: nil) { notification in
+            completionHandler(UIBackgroundFetchResult.NewData)
+        }
+        LocationRelay.sharedInstance.stopUpdates()
+        LocationRelay.sharedInstance.startUpdates()
     }
 
     func handleWave(userInfo: [NSObject: AnyObject]) {
@@ -185,7 +197,8 @@ struct GlobalConstants {
         static let stealthModeOff = "com.dskang.stealthModeOffNotification"
         static let openedOnWave = "com.dskang.openedOnWaveNotification"
         static let updatedVisibleFriends = "com.dskang.updatedVisibleFriendsNotification"
-        static let firstLocationUpdate = "com.dskang.firstLocationUpdateNotification"
+        static let userLocationUpdated = "com.dskang.userLocationUpdatedNotification"
+        static let userLocationSaved = "com.dskang.userLocationSavedNotification"
     }
 }
 
