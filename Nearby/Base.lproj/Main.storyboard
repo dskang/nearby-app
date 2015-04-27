@@ -86,6 +86,20 @@
                                     <action selector="changeEmoji" destination="BYZ-38-t0r" eventType="touchUpInside" id="LRI-LU-uTT"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="6qe-5U-vOg">
+                                <rect key="frame" x="282" y="139" width="37" height="37"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="eDM-3L-uio"/>
+                                    <constraint firstAttribute="height" constant="40" id="oIL-N7-RW1"/>
+                                </constraints>
+                                <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="eDM-3L-uio"/>
+                                        <exclude reference="oIL-N7-RW1"/>
+                                    </mask>
+                                </variation>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -97,6 +111,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" constant="-16" id="8mm-ve-f4k"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="B49-k5-Q3N"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-49" id="B9X-9N-IhU"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="centerX" secondItem="6qe-5U-vOg" secondAttribute="centerX" id="Do7-h9-sp0"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="F7m-Sx-5bl"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="HJf-gO-gH7"/>
                             <constraint firstAttribute="bottomMargin" secondItem="MX9-uh-OiU" secondAttribute="bottom" id="HNa-sQ-3ol"/>
@@ -125,6 +140,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="DrE-Hb-dqG" secondAttribute="trailing" id="sPQ-4G-Mb9"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-49" id="uG9-je-5od"/>
                             <constraint firstItem="DrE-Hb-dqG" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="v45-vH-drJ"/>
+                            <constraint firstItem="DrE-Hb-dqG" firstAttribute="centerY" secondItem="6qe-5U-vOg" secondAttribute="centerY" id="vPK-dp-5Uy"/>
                             <constraint firstItem="MX9-uh-OiU" firstAttribute="top" secondItem="DrE-Hb-dqG" secondAttribute="bottom" id="wNt-5G-Y7k"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="MX9-uh-OiU" secondAttribute="bottom" constant="-49" id="wR1-qN-ZtP"/>
                             <constraint firstAttribute="width" secondItem="DrE-Hb-dqG" secondAttribute="width" id="wb6-l0-IUW"/>
@@ -163,6 +179,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Nearby" image="nearby" id="1dd-6c-GCn"/>
                     <connections>
+                        <outlet property="activityIndicatorView" destination="6qe-5U-vOg" id="dW1-5L-eIB"/>
                         <outlet property="emojiButton" destination="inW-8e-MSw" id="76C-6h-LJI"/>
                         <outlet property="mapView" destination="DrE-Hb-dqG" id="OmJ-U6-B9G"/>
                         <outlet property="tableView" destination="MX9-uh-OiU" id="fLy-7v-0c9"/>

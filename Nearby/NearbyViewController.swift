@@ -16,6 +16,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var emojiButton: UIButton!
+    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
     let locationRelay = LocationRelay.sharedInstance
     let nearbyFriendsManager = NearbyFriendsManager()
@@ -411,12 +412,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
     }
 
-    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
-        let annotation = view.annotation as! FriendAnnotation
-        let waveButton = control as! UIButton
-        let message = waveButton.titleLabel!.text!
-        let params = ["recipientId": annotation.userId, "message": message]
+    func sendWave(#recipientId: String, message: String) {
+        activityIndicatorView.startAnimating()
+        let params = ["recipientId": recipientId, "message": message]
         PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
+            self.activityIndicatorView.stopAnimating()
             if let error = error {
                 let message = error.userInfo!["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
@@ -437,6 +437,13 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 self.presentViewController(alertController, animated: true, completion: nil)
             }
         }
+    }
+
+    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+        let annotation = view.annotation as! FriendAnnotation
+        let waveButton = control as! UIButton
+        let message = waveButton.titleLabel!.text!
+        sendWave(recipientId: annotation.userId, message: message)
     }
 
     func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
