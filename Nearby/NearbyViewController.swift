@@ -234,9 +234,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         installation["user"] = user
         installation.saveInBackground()
 
-        // Refresh location if user logged out and is logging back in
-        locationRelay.stopUpdates()
-
         nearbyFriendsManager.syncFriends {
             self.locationRelay.startUpdates()
         }

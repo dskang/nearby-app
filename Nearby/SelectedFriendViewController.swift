@@ -76,8 +76,8 @@ class SelectedFriendViewController: UIViewController {
             sentRequest.whereKey("fromUser", equalTo: user)
             sentRequest.whereKey("toUser", equalTo: friend)
             let receivedRequest = PFQuery(className: "BestFriendRequest")
-            sentRequest.whereKey("fromUser", equalTo: friend)
-            sentRequest.whereKey("toUser", equalTo: user)
+            receivedRequest.whereKey("fromUser", equalTo: friend)
+            receivedRequest.whereKey("toUser", equalTo: user)
             let query = PFQuery.orQueryWithSubqueries([sentRequest, receivedRequest])
             query.findObjectsInBackgroundWithBlock { objects, error in
                 if let error = error {
@@ -87,7 +87,7 @@ class SelectedFriendViewController: UIViewController {
                     if let bestFriendRequests = objects {
                         if bestFriendRequests.count > 0 {
                             let request = bestFriendRequests[0] as! PFObject
-                            let userSentRequest = request["fromUser"]?.objectId == user.objectId
+                            let userSentRequest = request["fromUser"]!.objectId == user.objectId
                             if userSentRequest {
                                 self.bestFriendRequestStatus = "sent"
                             } else {
