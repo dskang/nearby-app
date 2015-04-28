@@ -19,7 +19,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
     let locationRelay = LocationRelay.sharedInstance
-    let nearbyFriendsManager = NearbyFriendsManager()
+    let nearbyFriendsManager = NearbyFriendsManager.sharedInstance
     let nearbyDistance = 150.0
     var refreshControl: UIRefreshControl!
     let emojiTextField = UITextField()
@@ -414,6 +414,10 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func sendWave(#recipientId: String, message: String) {
         activityIndicatorView.startAnimating()
+
+        let dimensions = ["message": message]
+        PFAnalytics.trackEvent("wave", dimensions: dimensions)
+
         let params = ["recipientId": recipientId, "message": message]
         PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
             self.activityIndicatorView.stopAnimating()

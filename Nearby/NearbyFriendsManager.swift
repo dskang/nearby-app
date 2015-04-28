@@ -10,6 +10,7 @@ import Foundation
 import Parse
 
 class NearbyFriendsManager: NSObject {
+    static let sharedInstance = NearbyFriendsManager()
 
     let updateInterval = 30.0
     var updateTimer: NSTimer?
@@ -43,14 +44,10 @@ class NearbyFriendsManager: NSObject {
                     if let lastUpdated = self.lastUpdated {
                         let secondsPassed = abs(lastUpdated.timeIntervalSinceNow)
                         if secondsPassed >= self.updateInterval {
-                            self.syncFriends {
-                                self.update()
-                            }
-                        }
-                    } else {
-                        self.syncFriends {
                             self.update()
                         }
+                    } else {
+                        self.update()
                     }
                 }
             }
