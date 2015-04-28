@@ -498,6 +498,10 @@ class NearbyLogInViewController : PFLogInViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        logInView!.logo!.frame = CGRect(x: 64.0, y: 301.0, width: 244.0, height: 91.0)
+        logInView!.center = view.center
+        var frame = logInView!.logo!.frame
+        frame.size.width = 244.0
+        frame.size.height = 91.0
+        logInView!.logo!.frame = frame
     }
 }
