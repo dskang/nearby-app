@@ -41,7 +41,6 @@ class SelectedFriendViewController: UIViewController {
             } else {
                 blockButton.setTitle("Block", forState: UIControlState.Normal)
                 bestFriendButton.hidden = false
-
             }
         }
     }
@@ -128,9 +127,10 @@ class SelectedFriendViewController: UIViewController {
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 self.updateStatus()
             } else {
-                // Update best friends
                 if let user = User.currentUser() {
+                    // Update best friends
                     user.fetchInBackground()
+                    NearbyFriendsManager.sharedInstance.update()
                 }
             }
         }
@@ -144,9 +144,10 @@ class SelectedFriendViewController: UIViewController {
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 self.updateStatus()
             } else {
-                // Update best friends
                 if let user = User.currentUser() {
+                    // Update best friends
                     user.fetchInBackground()
+                    NearbyFriendsManager.sharedInstance.update()
                 }
             }
         }
@@ -176,14 +177,18 @@ class SelectedFriendViewController: UIViewController {
     func blockFriend() {
         if let user = User.currentUser() {
             user.addUniqueObject(friend, forKey: "blockedUsers")
-            user.saveInBackground()
+            user.saveInBackgroundWithBlock { success, error in
+                NearbyFriendsManager.sharedInstance.update()
+            }
         }
     }
 
     func unblockFriend() {
         if let user = User.currentUser() {
             user.removeObject(friend, forKey: "blockedUsers")
-            user.saveInBackground()
+            user.saveInBackgroundWithBlock { success, error in
+                NearbyFriendsManager.sharedInstance.update()
+            }
         }
     }
 

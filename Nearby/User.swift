@@ -24,7 +24,7 @@ class User: PFUser, PFSubclassing {
             self["hideLocation"] = newValue
         }
         get {
-            return self["hideLocation"] as! Bool
+            return (self["hideLocation"] as? Bool) ?? false
         }
     }
 
