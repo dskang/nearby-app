@@ -29,7 +29,7 @@ class RequestsViewController: PFQueryTableViewController {
                 if let user = User.currentUser() {
                     // Update bestFriends array
                     user.fetchInBackground()
-                    // TODO: Update nearby friends
+                    NearbyFriendsManager.sharedInstance.update()
                 }
             }
         }
