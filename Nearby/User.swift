@@ -15,9 +15,18 @@ class User: PFUser, PFSubclassing {
     @NSManaged var firstName: String
     @NSManaged var lastName: String
     @NSManaged var location: [String: Double]
-    @NSManaged var hideLocation: Bool
     @NSManaged var bestFriends: [User]
     @NSManaged var blockedUsers: [User]
+
+    // Accessing @NSManaged variables of type Bool results in crashes in iPhone 5 and older models
+    var hideLocation: Bool {
+        set {
+            self["hideLocation"] = newValue
+        }
+        get {
+            return self["hideLocation"] as! Bool
+        }
+    }
 
     var loc: CLLocation {
         let coordinate = CLLocationCoordinate2D(latitude: location["latitude"]!, longitude: location["longitude"]!)
