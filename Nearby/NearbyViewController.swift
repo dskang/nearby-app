@@ -374,6 +374,16 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = UIColor.whiteColor()
+        header.backgroundView?.backgroundColor = GlobalConstants.Colors.nearbyBlue
+    }
+
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30.0
+    }
+
     // MARK: - MKMapViewDelegate
 
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {

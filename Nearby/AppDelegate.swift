@@ -46,6 +46,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             LocationRelay.sharedInstance.startUpdates()
         }
 
+        window?.tintColor = GlobalConstants.Colors.nearbyBlue
+
+        let navBarStyle = UINavigationBar.appearance()
+        navBarStyle.barStyle = UIBarStyle.Black
+        navBarStyle.barTintColor = GlobalConstants.Colors.nearbyBlue
+        navBarStyle.translucent = false
+        navBarStyle.tintColor = UIColor.whiteColor()
+        navBarStyle.titleTextAttributes = [NSForegroundColorAttributeName:UIColor.whiteColor()]
+
         return true
     }
 
@@ -199,6 +208,9 @@ struct GlobalConstants {
         static let updatedVisibleFriends = "com.dskang.updatedVisibleFriendsNotification"
         static let initialUserLocationUpdate = "com.dskang.initialUserLocationUpdate"
         static let userLocationSaved = "com.dskang.userLocationSavedNotification"
+    }
+    struct Colors {
+        static let nearbyBlue = UIColor(red: 0.0, green: 122.0/255.0, blue: 216.0/255.0, alpha: 1.0)
     }
 }
 
