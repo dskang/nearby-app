@@ -24,13 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showLocationDisabledAlert", name: GlobalConstants.NotificationKey.disabledLocation, object: nil)
 
+        // Track an app open here if we launch with a push, unless
+        // "content_available" was used to trigger a background push (introduced in iOS 7).
+        // In that case, we skip tracking here to avoid double counting the app-open.
         if application.applicationState != UIApplicationState.Background {
-            // Track an app open here if we launch with a push, unless
-            // "content_available" was used to trigger a background push (introduced in iOS 7).
-            // In that case, we skip tracking here to avoid double counting the app-open.
-
             let pushPayload: AnyObject? = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey]
-            if pushPayload == nil {
+            if pushPayload != nil {
                 PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
             }
         }
