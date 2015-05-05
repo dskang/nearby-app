@@ -77,9 +77,10 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
         let location = locations.last as! CLLocation
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
+        let accurate = location.horizontalAccuracy <= 300.0
         let locationChanged = userLocation == nil || userLocation!.distanceFromLocation(location) > 5.0
         let locationOld = userLocation == nil || abs(userLocation!.timestamp.timeIntervalSinceNow) >= 60.0
-        if recent && (locationChanged || locationOld) {
+        if recent && accurate && (locationChanged || locationOld) {
             userLocation = location
         }
     }
