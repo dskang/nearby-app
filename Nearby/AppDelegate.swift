@@ -150,9 +150,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let type = userInfo["type"] as? String {
                     switch type {
                     case "wave":
-                        handleWave(userInfo)
+                        focusOnSender(userInfo)
+                    case "nearbyFriend":
+                        focusOnSender(userInfo)
                     case "bestFriendRequest":
-                        handleBestFriendRequest(userInfo)
+                        showBestFriendRequest(userInfo)
                     default: break
                     }
                 }
@@ -175,15 +177,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         LocationRelay.sharedInstance.startUpdates()
     }
 
-    func handleWave(userInfo: [NSObject: AnyObject]) {
+    func focusOnSender(userInfo: [NSObject: AnyObject]) {
         // Display NearbyViewController
         if let tabBarVC = self.window?.rootViewController as? UITabBarController {
             tabBarVC.selectedIndex = 0
         }
-        NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.openedOnWave, object: self, userInfo: userInfo)
+        NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.focusOnSender, object: self, userInfo: userInfo)
     }
 
-    func handleBestFriendRequest(userInfo: [NSObject: AnyObject]) {
+    func showBestFriendRequest(userInfo: [NSObject: AnyObject]) {
         // Display RequestsViewController
         if let tabBarVC = self.window?.rootViewController as? UITabBarController {
             tabBarVC.selectedIndex = 1
@@ -203,7 +205,7 @@ struct GlobalConstants {
         static let disabledLocation = "com.dskang.disabledLocationNotification"
         static let stealthModeOn = "com.dskang.stealthModeOnNotification"
         static let stealthModeOff = "com.dskang.stealthModeOffNotification"
-        static let openedOnWave = "com.dskang.openedOnWaveNotification"
+        static let focusOnSender = "com.dskang.focusOnSenderNotification"
         static let updatedVisibleFriends = "com.dskang.updatedVisibleFriendsNotification"
         static let initialUserLocationUpdate = "com.dskang.initialUserLocationUpdate"
         static let userLocationSaved = "com.dskang.userLocationSavedNotification"

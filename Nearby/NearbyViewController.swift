@@ -35,7 +35,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "focusOnWaveSender:", name: GlobalConstants.NotificationKey.openedOnWave, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "focusOnSender:", name: GlobalConstants.NotificationKey.focusOnSender, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateVisibleFriends", name: GlobalConstants.NotificationKey.updatedVisibleFriends, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleInitialUserLocation", name: GlobalConstants.NotificationKey.initialUserLocationUpdate, object: nil)
 
@@ -178,7 +178,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         tableView.reloadData()
     }
 
-    func focusOnWaveSender(notification: NSNotification) {
+    func focusOnSender(notification: NSNotification) {
         nearbyFriendsManager.update {
             let senderId = notification.userInfo!["senderId"] as! String
             var senderFound = false

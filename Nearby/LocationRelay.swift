@@ -20,14 +20,14 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
             if oldValue == nil && userLocation != nil {
                 NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.initialUserLocationUpdate, object: self)
             }
-            if let location = userLocation, user = User.currentUser() {
-                user.location = [
+            if let location = userLocation {
+                let params = [
                     "timestamp": location.timestamp.timeIntervalSince1970,
                     "latitude": location.coordinate.latitude,
                     "longitude": location.coordinate.longitude,
                     "accuracy": location.horizontalAccuracy
                 ]
-                user.saveInBackgroundWithBlock { success, error in
+                PFCloud.callFunctionInBackground("updateLocation", withParameters: params) { result, error in
                     if let error = error {
                         let message = error.userInfo!["error"] as! String
                         PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
