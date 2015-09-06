@@ -48,7 +48,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
             case .AuthorizedAlways:
-                locationManager.startUpdatingLocation()
+//                locationManager.startUpdatingLocation()
                 locationManager.startMonitoringSignificantLocationChanges()
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
@@ -61,7 +61,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     }
 
     func stopUpdates() {
-        locationManager.stopUpdatingLocation()
+//        locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
     }
 
@@ -69,7 +69,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedAlways {
-            locationManager.startUpdatingLocation()
+//            locationManager.startUpdatingLocation()
             locationManager.startMonitoringSignificantLocationChanges()
         }
     }
