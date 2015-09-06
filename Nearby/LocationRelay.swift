@@ -48,7 +48,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
             case .AuthorizedAlways:
-//                locationManager.startUpdatingLocation()
+                locationManager.startUpdatingLocation()
                 locationManager.startMonitoringSignificantLocationChanges()
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
@@ -61,7 +61,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     }
 
     func stopUpdates() {
-//        locationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
     }
 
@@ -69,12 +69,14 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedAlways {
-//            locationManager.startUpdatingLocation()
+            locationManager.startUpdatingLocation()
             locationManager.startMonitoringSignificantLocationChanges()
         }
     }
 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+        locationManager.stopUpdatingLocation() // Stop standard location service after initial location fix
+
         let location = locations.last as! CLLocation
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let accurate = location.horizontalAccuracy <= 300.0
