@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Parse
 
 class SelectedFriendViewController: UIViewController {
 
@@ -62,7 +61,7 @@ class SelectedFriendViewController: UIViewController {
             self.bestFriendRequestStatus = nil
             user.fetchInBackgroundWithBlock { object, error in
                 if let error = error {
-                    let message = error.userInfo!["error"] as! String
+                    let message = error.userInfo["error"] as! String
                     PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 } else {
                     if user.hasBestFriend(self.friend) {
@@ -80,12 +79,12 @@ class SelectedFriendViewController: UIViewController {
             let query = PFQuery.orQueryWithSubqueries([sentRequest, receivedRequest])
             query.findObjectsInBackgroundWithBlock { objects, error in
                 if let error = error {
-                    let message = error.userInfo!["error"] as! String
+                    let message = error.userInfo["error"] as! String
                     PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 } else {
                     if let bestFriendRequests = objects {
                         if bestFriendRequests.count > 0 {
-                            let request = bestFriendRequests[0] as! PFObject
+                            let request = bestFriendRequests[0] 
                             let userSentRequest = request["fromUser"]!.objectId == user.objectId
                             if userSentRequest {
                                 self.bestFriendRequestStatus = "sent"
@@ -123,7 +122,7 @@ class SelectedFriendViewController: UIViewController {
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("addBestFriend", withParameters: params) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 self.updateStatus()
             } else {
@@ -140,7 +139,7 @@ class SelectedFriendViewController: UIViewController {
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("removeBestFriend", withParameters: params) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 self.updateStatus()
             } else {
@@ -157,7 +156,7 @@ class SelectedFriendViewController: UIViewController {
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("removeBestFriendRequest", withParameters: params) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 self.updateStatus()
             }

@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Parse
 
-class User: PFUser, PFSubclassing {
+class User: PFUser {
     @NSManaged var fbId: String!
     @NSManaged var name: String
     @NSManaged var firstName: String

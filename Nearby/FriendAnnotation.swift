@@ -16,7 +16,7 @@ class FriendAnnotation: MKPointAnnotation {
         self.userId = userId
     }
 
-    func setValues(#userName: String, userLocation: CLLocation) {
+    func setValues(userName userName: String, userLocation: CLLocation) {
         let timeAgo = userLocation.timestamp.shortTimeAgoSinceNow()
         title = userName
         subtitle = "\(timeAgo) ago"

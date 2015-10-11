@@ -2,7 +2,7 @@ pod 'Parse'
 pod 'ParseCrashReporting'
 pod 'ParseUI'
 
-pod 'Facebook-iOS-SDK'
+pod 'FBSDKCoreKit'
 pod 'ParseFacebookUtilsV4'
 
 pod 'DateTools'

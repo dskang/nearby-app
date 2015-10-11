@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Parse
 import CoreLocation
 import MapKit
 
@@ -29,8 +28,8 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        locationRelay.addObserver(self, forKeyPath: "userLocation", options: (NSKeyValueObservingOptions.Old | NSKeyValueObservingOptions.New), context: nil)
-        nearbyFriendsManager.addObserver(self, forKeyPath: "nearbyFriends", options: NSKeyValueObservingOptions.allZeros, context: nil)
+        locationRelay.addObserver(self, forKeyPath: "userLocation", options: ([NSKeyValueObservingOptions.Old, NSKeyValueObservingOptions.New]), context: nil)
+        nearbyFriendsManager.addObserver(self, forKeyPath: "nearbyFriends", options: NSKeyValueObservingOptions(), context: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
@@ -242,11 +241,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func getFacebookData() {
         if let user = User.currentUser() {
-            let request = FBSDKGraphRequest(graphPath: "me", parameters: nil)
+            let request = FBSDKGraphRequest(graphPath: "me?fields=id,name,first_name,last_name", parameters: nil)
             request.startWithCompletionHandler() { connection, result, error in
                 if let error = error {
-                    let errorCode = error.userInfo![FBSDKGraphRequestErrorGraphErrorCode] as! Int
-                    let message = error.userInfo![FBSDKErrorDeveloperMessageKey] as! String
+                    let errorCode = error.userInfo[FBSDKGraphRequestErrorGraphErrorCode] as! Int
+                    let message = error.userInfo[FBSDKErrorDeveloperMessageKey] as! String
                     PFAnalytics.trackEvent("error", dimensions:["code": "\(errorCode)", "message": message])
                 } else {
                     let userData = result as! [NSObject: AnyObject]
@@ -339,7 +338,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "NearbyFriendCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(identifier)!
 
         let friend = listForSection(indexPath.section)[indexPath.row]
         cell.textLabel?.text = friend.name
@@ -376,7 +375,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel.textColor = UIColor.whiteColor()
+        header.textLabel!.textColor = UIColor.whiteColor()
         header.backgroundView?.backgroundColor = GlobalConstants.Colors.nearbyBlue
     }
 
@@ -386,7 +385,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     // MARK: - MKMapViewDelegate
 
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? FriendAnnotation {
             let identifier = "PinAnnotationView"
             var view: MKPinAnnotationView! = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as? MKPinAnnotationView
@@ -422,7 +421,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
     }
 
-    func sendWave(#recipientId: String, message: String) {
+    func sendWave(recipientId recipientId: String, message: String) {
         activityIndicatorView.startAnimating()
 
         let dimensions = ["message": message]
@@ -432,7 +431,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         PFCloud.callFunctionInBackground("wave", withParameters: params) { result, error in
             self.activityIndicatorView.stopAnimating()
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                 let alertController = UIAlertController(
                     title: message,
@@ -453,20 +452,20 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
     }
 
-    func mapView(mapView: MKMapView!, annotationView view: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!) {
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         let annotation = view.annotation as! FriendAnnotation
         let waveButton = control as! UIButton
         let message = waveButton.titleLabel!.text!
         sendWave(recipientId: annotation.userId, message: message)
     }
 
-    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         if view.annotation is FriendAnnotation {
             emojiButton.hidden = false
         }
     }
 
-    func mapView(mapView: MKMapView!, didDeselectAnnotationView view: MKAnnotationView!) {
+    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
         if view.annotation is FriendAnnotation {
             emojiButton.hidden = true
             // Delay until callout is closed
@@ -485,11 +484,11 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         let isEmoji = textField.textInputMode == nil
-        let notBackspace = count(string) > 0
+        let notBackspace = string.characters.count > 0
         if isEmoji && notBackspace {
             let selectedAnnotation = mapView.selectedAnnotations[0] as! FriendAnnotation
             let view = mapView.viewForAnnotation(selectedAnnotation)
-            let waveButton = view.rightCalloutAccessoryView as! UIButton
+            let waveButton = view!.rightCalloutAccessoryView as! UIButton
             waveButton.setTitle(string, forState: UIControlState.Normal)
             dismissKeyboard()
         }

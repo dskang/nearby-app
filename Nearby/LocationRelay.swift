@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreLocation
-import Parse
 
 class LocationRelay: NSObject, CLLocationManagerDelegate {
     static let sharedInstance = LocationRelay()
@@ -29,7 +28,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
                 ]
                 PFCloud.callFunctionInBackground("updateLocation", withParameters: params) { result, error in
                     if let error = error {
-                        let message = error.userInfo!["error"] as! String
+                        let message = error.userInfo["error"] as! String
                         PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
                     } else {
                         NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.userLocationSaved, object: self)
@@ -67,17 +66,17 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     // MARK: - CLLocationManagerDelegate
 
-    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if status == .AuthorizedAlways {
             locationManager.startUpdatingLocation()
             locationManager.startMonitoringSignificantLocationChanges()
         }
     }
 
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationManager.stopUpdatingLocation() // Stop standard location service after initial location fix
 
-        let location = locations.last as! CLLocation
+        let location = locations.last!
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let accurate = location.horizontalAccuracy <= 300.0
         let locationChanged = userLocation == nil || userLocation!.distanceFromLocation(location) > 5.0

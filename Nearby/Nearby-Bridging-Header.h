@@ -11,6 +11,8 @@
 
 #import <Bolts/Bolts.h>
 #import <ParseUI/ParseUI.h>
+#import <Parse/Parse.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKCoreKit/FBSDKConstants.h>

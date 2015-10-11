@@ -6,10 +6,8 @@
 //  Copyright (c) 2015 Dan Kang. All rights reserved.
 //
 
-import Parse
-
 class RequestsViewController: PFQueryTableViewController {
-    required init!(coder aDecoder: NSCoder!) {
+    required init!(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         paginationEnabled = false
     }
@@ -22,7 +20,7 @@ class RequestsViewController: PFQueryTableViewController {
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("addBestFriend", withParameters: params) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 self.loadObjects()
@@ -43,7 +41,7 @@ class RequestsViewController: PFQueryTableViewController {
         let params = ["recipientId": friend.objectId!]
         PFCloud.callFunctionInBackground("removeBestFriendRequest", withParameters: params) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 self.loadObjects()

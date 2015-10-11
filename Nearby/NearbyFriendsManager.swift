@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Parse
 
 class NearbyFriendsManager: NSObject {
     static let sharedInstance = NearbyFriendsManager()
@@ -18,13 +17,13 @@ class NearbyFriendsManager: NSObject {
 
     var nearbyFriends: [User]? {
         didSet {
-            nearbyFriends?.sort({ $0.name < $1.name })
+            nearbyFriends?.sortInPlace({ $0.name < $1.name })
         }
     }
 
     var bestFriends: [User]? {
         didSet {
-            bestFriends?.sort({ $0.name < $1.name })
+            bestFriends?.sortInPlace({ $0.name < $1.name })
         }
     }
 
@@ -63,7 +62,7 @@ class NearbyFriendsManager: NSObject {
                 }
                 NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
                     self.updateTimer?.invalidate()
-                    self.updateTimer = NSTimer.scheduledTimerWithTimeInterval(self.updateInterval, target: self, selector: "update:", userInfo: nil, repeats: true)
+                    self.updateTimer = NSTimer.scheduledTimerWithTimeInterval(self.updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
                 }
                 NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationWillResignActiveNotification", object: nil, queue: nil) { notification in
                     self.updateTimer?.invalidate()
@@ -72,14 +71,14 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
-    func update(timer: NSTimer) {
+    func updateWithTimer(timer: NSTimer) {
         update()
     }
 
     func update(completion: (() -> Void)? = nil) {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 if let result = result as? [String: [User]] {
@@ -98,7 +97,7 @@ class NearbyFriendsManager: NSObject {
     func syncFriends(completion: (() -> Void)? = nil) {
         PFCloud.callFunctionInBackground("updateFriends", withParameters: nil) { result, error in
             if let error = error {
-                let message = error.userInfo!["error"] as! String
+                let message = error.userInfo["error"] as! String
                 PFAnalytics.trackEvent("error", dimensions:["code": "\(error.code)", "message": message])
             } else {
                 if let completion = completion {

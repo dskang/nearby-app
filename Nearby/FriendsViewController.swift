@@ -7,10 +7,9 @@
 //
 
 import Foundation
-import Parse
 
 class FriendsViewController: PFQueryTableViewController {
-    required init!(coder aDecoder: NSCoder!) {
+    required init!(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         paginationEnabled = false
     }
