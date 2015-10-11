@@ -74,7 +74,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        locationManager.stopUpdatingLocation() // Stop standard location service after initial location fix
+//        locationManager.stopUpdatingLocation() // Stop standard location service after initial location fix
 
         let location = locations.last!
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0

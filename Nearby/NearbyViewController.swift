@@ -49,7 +49,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
 
         refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self.nearbyFriendsManager, action: "update:", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self.nearbyFriendsManager, action: "updateWithSender:", forControlEvents: UIControlEvents.ValueChanged)
 
         emojiButton.hidden = true
         emojiTextField.delegate = self

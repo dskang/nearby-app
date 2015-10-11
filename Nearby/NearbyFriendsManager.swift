@@ -75,6 +75,10 @@ class NearbyFriendsManager: NSObject {
         update()
     }
 
+    func updateWithSender(sender: AnyObject) {
+        update()
+    }
+
     func update(completion: (() -> Void)? = nil) {
         PFCloud.callFunctionInBackground("nearbyFriends", withParameters: nil) { result, error in
             if let error = error {
