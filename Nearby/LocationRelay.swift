@@ -40,7 +40,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     func startUpdates() {
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.pausesLocationUpdatesAutomatically = false
 
@@ -49,6 +49,9 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
             case .AuthorizedAlways:
                 locationManager.startUpdatingLocation()
                 locationManager.startMonitoringSignificantLocationChanges()
+                // Retrieve fine-grained location only when active
+                NSNotificationCenter.defaultCenter().addObserver(locationManager, selector: "startUpdatingLocation", name: "UIApplicationDidBecomeActiveNotification", object: nil)
+                NSNotificationCenter.defaultCenter().addObserver(locationManager, selector: "stopUpdatingLocation", name: "UIApplicationWillResignActiveNotification", object: nil)
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
             case .Restricted, .Denied:
@@ -62,6 +65,8 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     func stopUpdates() {
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
+        NSNotificationCenter.defaultCenter().removeObserver(locationManager, name: "UIApplicationDidBecomeActiveNotification", object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(locationManager, name: "UIApplicationWillResignActiveNotification", object: nil)
     }
 
     // MARK: - CLLocationManagerDelegate
@@ -74,8 +79,6 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        locationManager.stopUpdatingLocation() // Stop standard location service after initial location fix
-
         let location = locations.last!
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
         let accurate = location.horizontalAccuracy <= 300.0
