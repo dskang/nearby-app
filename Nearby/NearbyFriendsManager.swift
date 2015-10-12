@@ -35,9 +35,8 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
-    var updateOnActive: Bool = false {
+    var updateOnActive = false {
         willSet {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
             if newValue == true {
                 NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
                     if let lastUpdated = self.lastUpdated {
@@ -53,7 +52,7 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
-    var updatePeriodically: Bool = false {
+    var updatePeriodicallyWhileActive = false {
         willSet {
             updateTimer?.invalidate()
             if newValue == true {
@@ -114,11 +113,13 @@ class NearbyFriendsManager: NSObject {
     func startUpdates() {
         update()
         updateOnActive = true
-        updatePeriodically = true
+        updatePeriodicallyWhileActive = true
     }
 
     func stopUpdates() {
         updateOnActive = false
-        updatePeriodically = false
+        updatePeriodicallyWhileActive = false
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationWillResignActiveNotification", object: nil)
     }
 }
