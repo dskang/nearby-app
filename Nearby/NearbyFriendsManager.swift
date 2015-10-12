@@ -58,7 +58,7 @@ class NearbyFriendsManager: NSObject {
             updateTimer?.invalidate()
             if newValue == true {
                 if UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
-                    updateTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "update:", userInfo: nil, repeats: true)
+                    updateTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
                 }
                 NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
                     self.updateTimer?.invalidate()
