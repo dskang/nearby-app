@@ -35,39 +35,24 @@ class NearbyFriendsManager: NSObject {
         }
     }
 
-    var updateOnActive = false {
-        willSet {
-            if newValue == true {
-                NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
-                    if let lastUpdated = self.lastUpdated {
-                        let secondsPassed = abs(lastUpdated.timeIntervalSinceNow)
-                        if secondsPassed >= self.updateInterval {
-                            self.update()
-                        }
-                    } else {
-                        self.update()
-                    }
-                }
+    func updateIfStale() {
+        if let lastUpdated = lastUpdated {
+            let secondsPassed = abs(lastUpdated.timeIntervalSinceNow)
+            if secondsPassed >= updateInterval {
+                update()
             }
+        } else {
+            update()
         }
     }
 
-    var updatePeriodicallyWhileActive = false {
-        willSet {
-            updateTimer?.invalidate()
-            if newValue == true {
-                if UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
-                    updateTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
-                }
-                NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationDidBecomeActiveNotification", object: nil, queue: nil) { notification in
-                    self.updateTimer?.invalidate()
-                    self.updateTimer = NSTimer.scheduledTimerWithTimeInterval(self.updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
-                }
-                NSNotificationCenter.defaultCenter().addObserverForName("UIApplicationWillResignActiveNotification", object: nil, queue: nil) { notification in
-                    self.updateTimer?.invalidate()
-                }
-            }
-        }
+    func startUpdatingPeriodically() {
+        updateTimer?.invalidate()
+        updateTimer = NSTimer.scheduledTimerWithTimeInterval(self.updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
+    }
+
+    func stopUpdatingPeriodically() {
+        updateTimer?.invalidate()
     }
 
     func updateWithTimer(timer: NSTimer) {
@@ -112,13 +97,19 @@ class NearbyFriendsManager: NSObject {
 
     func startUpdates() {
         update()
-        updateOnActive = true
-        updatePeriodicallyWhileActive = true
+        // Update nearby friends when app becomes active
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateIfStale", name: "UIApplicationDidBecomeActiveNotification", object: nil)
+        // Update nearby friends periodically when active
+        updateTimer?.invalidate()
+        if UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
+            updateTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
+        }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startUpdatingPeriodically", name: "UIApplicationDidBecomeActiveNotification", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "stopUpdatingPeriodically", name: "UIApplicationWillResignActiveNotification", object: nil)
     }
 
     func stopUpdates() {
-        updateOnActive = false
-        updatePeriodicallyWhileActive = false
+        updateTimer?.invalidate()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationWillResignActiveNotification", object: nil)
     }
