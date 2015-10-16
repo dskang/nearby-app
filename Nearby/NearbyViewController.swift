@@ -19,7 +19,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
     let locationRelay = LocationRelay.sharedInstance
     let nearbyFriendsManager = NearbyFriendsManager.sharedInstance
-    let nearbyDistance = 150.0
+    let nearbyDistance = 400.0
     var refreshControl: UIRefreshControl!
     let emojiTextField = UITextField()
     var tap: UIGestureRecognizer!
