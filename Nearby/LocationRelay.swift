@@ -81,11 +81,15 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations.last!
         let recent = abs(location.timestamp.timeIntervalSinceNow) < 15.0
-        let accurate = location.horizontalAccuracy <= 300.0
-        let locationChanged = userLocation == nil || userLocation!.distanceFromLocation(location) > 5.0
+        let accurate = location.horizontalAccuracy <= 150.0
+        let locationChanged = userLocation == nil || userLocation!.distanceFromLocation(location) > 10.0
         let locationOld = userLocation == nil || abs(userLocation!.timestamp.timeIntervalSinceNow) >= 60.0
         if recent && accurate && (locationChanged || locationOld) {
             userLocation = location
+            // Turn off standard location if it was started with a silent notification after getting location fix
+            if (UIApplication.sharedApplication().applicationState != UIApplicationState.Active) {
+                locationManager.stopUpdatingLocation()
+            }
         }
     }
 }
