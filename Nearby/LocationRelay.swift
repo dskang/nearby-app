@@ -86,7 +86,7 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
         let locationOld = userLocation == nil || abs(userLocation!.timestamp.timeIntervalSinceNow) >= 60.0
         if recent && accurate && (locationChanged || locationOld) {
             userLocation = location
-            // Turn off standard location if it was started with a silent notification after getting location fix
+            // Turn off standard location after getting location fix if the app is in the background
             if (UIApplication.sharedApplication().applicationState != UIApplicationState.Active) {
                 locationManager.stopUpdatingLocation()
             }
