@@ -38,7 +38,7 @@ class MeViewController: UITableViewController {
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if let user = User.currentUser() {
-            if user.name == "Dan Kang" {
+            if user.objectId == "6AsIH1uuc1" {
                 return super.numberOfSectionsInTableView(tableView)
             }
         }
