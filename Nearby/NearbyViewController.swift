@@ -28,9 +28,6 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        locationRelay.addObserver(self, forKeyPath: "userLocation", options: ([NSKeyValueObservingOptions.Old, NSKeyValueObservingOptions.New]), context: nil)
-        nearbyFriendsManager.addObserver(self, forKeyPath: "nearbyFriends", options: NSKeyValueObservingOptions(), context: nil)
-
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "enableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOn, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "disableStealthMode", name: GlobalConstants.NotificationKey.stealthModeOff, object: nil)
 
