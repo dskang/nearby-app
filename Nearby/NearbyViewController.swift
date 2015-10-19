@@ -36,7 +36,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "focusOnSender:", name: GlobalConstants.NotificationKey.focusOnSender, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateVisibleFriends", name: GlobalConstants.NotificationKey.updatedVisibleFriends, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleInitialUserLocation", name: GlobalConstants.NotificationKey.initialUserLocationUpdate, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleInitialUserLocationWhenActive", name: GlobalConstants.NotificationKey.initialUserLocationUpdate, object: nil)
 
         if let user = User.currentUser() {
             if user.fbId == nil {
@@ -142,7 +142,16 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
         }
     }
 
+    func handleInitialUserLocationWhenActive() {
+        if UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
+            handleInitialUserLocation()
+        } else {
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleInitialUserLocation", name: "UIApplicationDidBecomeActiveNotification", object: nil)
+        }
+    }
+
     func handleInitialUserLocation() {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "UIApplicationDidBecomeActiveNotification", object: nil)
         if let location = locationRelay.userLocation {
             mapView.showsUserLocation = true
             centerAndZoomMapOnCoordinate(location.coordinate)
