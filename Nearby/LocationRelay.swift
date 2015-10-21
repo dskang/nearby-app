@@ -14,10 +14,13 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     let locationManager = CLLocationManager()
 
+    var receivedInitialUserLocationWhenActive = false
+
     var userLocation: CLLocation? {
         didSet {
-            if oldValue == nil && userLocation != nil {
-                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.initialUserLocationUpdate, object: self)
+            if !receivedInitialUserLocationWhenActive && UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
+                NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.initialUserLocationWhenActive, object: self)
+                receivedInitialUserLocationWhenActive = true
             }
             if let location = userLocation {
                 let params = [
