@@ -96,12 +96,12 @@ class NearbyFriendsManager: NSObject {
     }
 
     func startUpdates() {
-        update()
+        stopUpdates()
         // Update nearby friends when app becomes active
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateIfStale", name: "UIApplicationDidBecomeActiveNotification", object: nil)
         // Update nearby friends periodically when active
-        updateTimer?.invalidate()
         if UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
+            update()
             updateTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "updateWithTimer:", userInfo: nil, repeats: true)
         }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startUpdatingPeriodically", name: "UIApplicationDidBecomeActiveNotification", object: nil)
