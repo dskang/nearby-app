@@ -267,8 +267,14 @@
                                     <action selector="toggleBestFriend" destination="mX8-gy-MnA" eventType="touchUpInside" id="EwZ-YM-FD0"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Best friends can always see each others' locations." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GdO-c1-DL9">
+                                <rect key="frame" x="20" y="166" width="560" height="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rnn-W2-mgM">
-                                <rect key="frame" x="20" y="174" width="43" height="33"/>
+                                <rect key="frame" x="20" y="194" width="43" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Block">
                                     <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -281,21 +287,30 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="GdO-c1-DL9" secondAttribute="trailing" constant="518" id="1fQ-5t-yfk"/>
                             <constraint firstItem="0qa-40-9tU" firstAttribute="top" secondItem="J4A-gC-ueW" secondAttribute="bottom" constant="32" id="7Gb-Ua-3vp"/>
                             <constraint firstItem="J4A-gC-ueW" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leading" constant="16" id="8oT-7X-s4I"/>
                             <constraint firstItem="rnn-W2-mgM" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="9V4-KD-SgE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="GdO-c1-DL9" secondAttribute="trailing" id="B6H-cf-iCb"/>
                             <constraint firstItem="rnn-W2-mgM" firstAttribute="top" secondItem="0qa-40-9tU" secondAttribute="bottom" constant="8" symbolic="YES" id="Qb9-mW-K4a"/>
                             <constraint firstItem="J4A-gC-ueW" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="RAy-OH-cWK"/>
+                            <constraint firstItem="rnn-W2-mgM" firstAttribute="top" secondItem="GdO-c1-DL9" secondAttribute="bottom" constant="81" id="UJs-CL-z3m"/>
                             <constraint firstItem="J4A-gC-ueW" firstAttribute="top" secondItem="AeQ-Zj-LU0" secondAttribute="bottom" constant="16" id="bpE-3i-4OW"/>
                             <constraint firstItem="J4A-gC-ueW" firstAttribute="top" secondItem="AeQ-Zj-LU0" secondAttribute="bottom" constant="18" id="db9-5u-Xjg"/>
                             <constraint firstItem="0qa-40-9tU" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="kiM-pu-NbA"/>
                             <constraint firstItem="J4A-gC-ueW" firstAttribute="leading" secondItem="8Mg-O2-ZE7" secondAttribute="leadingMargin" id="lmb-ar-Vdd"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="GdO-c1-DL9" secondAttribute="leading" id="qrR-0A-lnc"/>
+                            <constraint firstItem="GdO-c1-DL9" firstAttribute="top" secondItem="0qa-40-9tU" secondAttribute="bottom" id="vIQ-5p-oOf"/>
+                            <constraint firstItem="rnn-W2-mgM" firstAttribute="top" secondItem="GdO-c1-DL9" secondAttribute="bottom" constant="12" id="w5f-W0-lOW"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="8oT-7X-s4I"/>
                                 <exclude reference="RAy-OH-cWK"/>
                                 <exclude reference="db9-5u-Xjg"/>
+                                <exclude reference="1fQ-5t-yfk"/>
+                                <exclude reference="Qb9-mW-K4a"/>
+                                <exclude reference="UJs-CL-z3m"/>
                             </mask>
                         </variation>
                     </view>
