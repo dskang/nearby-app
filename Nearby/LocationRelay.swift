@@ -18,7 +18,9 @@ class LocationRelay: NSObject, CLLocationManagerDelegate {
 
     var userLocation: CLLocation? {
         didSet {
-            if !receivedInitialUserLocationWhenActive && UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
+            if userLocation == nil {
+                receivedInitialUserLocationWhenActive = false
+            } else if !receivedInitialUserLocationWhenActive && UIApplication.sharedApplication().applicationState == UIApplicationState.Active {
                 NSNotificationCenter.defaultCenter().postNotificationName(GlobalConstants.NotificationKey.initialUserLocationWhenActive, object: self)
                 receivedInitialUserLocationWhenActive = true
             }
