@@ -127,7 +127,7 @@ class NearbyViewController: UIViewController, PFLogInViewControllerDelegate, UIT
                 if let annotation = friendAnnotation {
                     annotation.setValues(userName: friend.name, userLocation: friend.loc)
                 } else {
-                    if !friend.hideLocation {
+                    if !friend.hideLocation && friend.location.count > 1 {
                         let annotation = FriendAnnotation(userId: friend.objectId!)
                         annotation.setValues(userName: friend.name, userLocation: friend.loc)
                         mapView.addAnnotation(annotation)
